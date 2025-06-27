@@ -1,29 +1,35 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbxjcD5D0vufLdZhyfnmKcf63POSPWX0uIaQRc1dz-YTGo4NoXqeaBe2lBaSaT4YLFZF7g/exec"; // Ganti dengan URL Web App kamu
+const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
   e.preventDefault();
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
 
-  const res = await fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify({ username, password }),
-    headers: { "Content-Type": "application/json" }
-  });
+  const username = encodeURIComponent(document.getElementById("username").value.trim());
+  const password = encodeURIComponent(document.getElementById("password").value.trim());
 
-  const result = await res.json();
-  if (result.status === "success") {
-    // Simpan role untuk halaman berikutnya (opsional pakai localStorage)
-    localStorage.setItem("username", username);
-    localStorage.setItem("role", result.role);
+  const loginURL = `${scriptURL}?action=login&username=${username}&password=${password}`;
+  console.log("Login request to:", loginURL);
 
-    // Redirect sesuai role
-    if (result.role === "guru") {
-      window.location.href = "dashboard_guru.html";
-    } else if (result.role === "petugas") {
-      window.location.href = "dashboard_petugas.html";
+  try {
+    const res = await fetch(loginURL);
+    const result = await res.json();
+    console.log("Login result:", result);
+
+    if (result.status === "success") {
+      localStorage.setItem("username", username);
+      localStorage.setItem("role", result.role);
+
+      if (result.role === "guru") {
+        window.location.href = "dashboard_guru.html";
+      } else if (result.role === "petugas") {
+        window.location.href = "dashboard_petugas.html";
+      } else {
+        document.getElementById("message").innerText = "Role tidak dikenali.";
+      }
+    } else {
+      document.getElementById("message").innerText = result.message;
     }
-  } else {
-    document.getElementById("message").innerText = result.message;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    document.getElementById("message").innerText = "Gagal menghubungi server.";
   }
 });
