@@ -1,4 +1,4 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycb.../exec"; // Ganti dengan URL Web App kamu
+const scriptURL = "https://script.google.com/macros/s/AKfycbxjcD5D0vufLdZhyfnmKcf63POSPWX0uIaQRc1dz-YTGo4NoXqeaBe2lBaSaT4YLFZF7g/exec"; // Ganti dengan URL Web App kamu
 
 document.getElementById("loginForm").addEventListener("submit", async function(e) {
   e.preventDefault();
