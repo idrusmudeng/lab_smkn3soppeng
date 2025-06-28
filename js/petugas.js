@@ -1,4 +1,4 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbxjcD5D0vufLdZhyfnmKcf63POSPWX0uIaQRc1dz-YTGo4NoXqeaBe2lBaSaT4YLFZF7g/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
 // Cek role
 const role = localStorage.getItem("role");
