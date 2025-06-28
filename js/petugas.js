@@ -31,6 +31,35 @@ async function loadInventaris() {
   }
 }
 
+document.getElementById("formTambah").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+  const params = new URLSearchParams({ action: "tambah" });
+
+  for (const [key, value] of formData.entries()) {
+    params.append(key, value);
+  }
+
+  try {
+    const res = await fetch(`${scriptURL}?${params.toString()}`);
+    const result = await res.json();
+    console.log("Respon tambah:", result);
+    if (result.status === "success") {
+      alert("Data berhasil ditambahkan.");
+      form.reset();
+      loadInventaris();
+    } else {
+      alert("Gagal tambah data: " + result.message);
+    }
+  } catch (err) {
+    console.error("Tambah error:", err);
+    alert("Gagal mengirim data.");
+  }
+});
+
+
 // Render tabel
 function renderTable(data) {
   if (!data || data.length === 0) {
