@@ -1,4 +1,5 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycb.../exec"; // URL Web App kamu
+const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const role = localStorage.getItem("role");
