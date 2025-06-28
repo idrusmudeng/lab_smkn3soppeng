@@ -84,3 +84,4 @@ function renderTable(data) {
 
 // Jalankan saat halaman dimuat
 loadInventaris();
+console.log("Script petugas.js aktif");
