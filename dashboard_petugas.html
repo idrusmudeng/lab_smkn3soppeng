@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard Petugas Lab</title>
-  <script src="js/petugas.js" defer></script>
+  <meta charset="UTF-8" />
+  <title>Dashboard Petugas</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background-color: #f2f2f2; }
+    #logout { margin-top: 10px; }
+  </style>
 </head>
 <body>
-  <h2>Selamat Datang, Petugas</h2>
-  <button onclick="logout()">Logout</button>
-  <div id="crudArea">Memuat data CRUD...</div>
+  <h2>Dashboard Petugas</h2>
+  <p>Selamat datang, <span id="username"></span>!</p>
+  <button id="logout">Logout</button>
+
+  <h3>Data Inventaris</h3>
+  <div id="table-container">Memuat data...</div>
+
+  <script src="js/petugas.js"></script>
 </body>
 </html>
