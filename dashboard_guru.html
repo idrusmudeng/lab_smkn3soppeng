@@ -1,62 +1,129 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Guru</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    form { margin-bottom: 20px; }
+    label { display: block; margin: 5px 0 2px; }
+    input, select { width: 100%; padding: 6px; box-sizing: border-box; }
+    button { margin-top: 10px; padding: 10px 20px; background: #28a745; border: none; color: white; cursor: pointer; }
+    button:hover { background: #218838; }
+  </style>
+</head>
+<body>
+  <h1>Dashboard Guru</h1>
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetchInventaris();
+  <div>
+    <h2>Inventaris Barang</h2>
+    <div id="inventarisContainer"></div>
+  </div>
 
-  document.getElementById("formPeminjaman").addEventListener("submit", ajukanPeminjaman);
-});
+  <div>
+    <h2>Ajukan Peminjaman</h2>
+    <form id="formPeminjaman">
+      <label for="nama_peminjam">Nama Peminjam</label>
+      <input type="text" id="nama_peminjam" name="nama_peminjam" required autocomplete="off" />
 
-function fetchInventaris() {
-  fetch(`${scriptURL}?action=viewInventaris`)
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("tabelInventaris");
-      if (data.length === 0) {
-        container.innerHTML = "Tidak ada data.";
-        return;
+      <label for="id_barang">ID Barang</label>
+      <select id="id_barang" name="id_barang" required></select>
+
+      <label for="nama_barang">Nama Barang</label>
+      <input type="text" id="nama_barang" name="nama_barang" readonly />
+
+      <label for="jumlah">Jumlah</label>
+      <input type="number" id="jumlah" name="jumlah" min="1" required />
+
+      <label for="tanggal_pinjam">Tanggal Pinjam</label>
+      <input type="date" id="tanggal_pinjam" name="tanggal_pinjam" required />
+
+      <label for="tanggal_kembali">Tanggal Kembali</label>
+      <input type="date" id="tanggal_kembali" name="tanggal_kembali" required />
+
+      <button type="submit">Ajukan</button>
+    </form>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+
+    // Load inventaris dan isi dropdown ID Barang
+    async function loadInventaris() {
+      try {
+        const res = await fetch(`${scriptURL}?action=viewInventaris`);
+        const data = await res.json();
+        if (!data || data.length < 2) {
+          document.getElementById('inventarisContainer').innerText = "Data inventaris kosong.";
+          return;
+        }
+
+        // Tampilkan tabel inventaris
+        let html = "<table><thead><tr>";
+        data[0].forEach(h => {
+          if (["ID_BARANG","NAMA_BARANG","KATEGORI","JUMLAH","KETERANGAN"].includes(h)) {
+            html += `<th>${h}</th>`;
+          }
+        });
+        html += "</tr></thead><tbody>";
+
+        for(let i=1; i < data.length; i++) {
+          const row = data[i];
+          html += "<tr>";
+          row.forEach((cell, idx) => {
+            if (["ID_BARANG","NAMA_BARANG","KATEGORI","JUMLAH","KETERANGAN"].includes(data[0][idx])) {
+              html += `<td>${cell}</td>`;
+            }
+          });
+          html += "</tr>";
+        }
+        html += "</tbody></table>";
+        document.getElementById('inventarisContainer').innerHTML = html;
+
+        // Isi dropdown ID Barang
+        const idBarangSelect = document.getElementById('id_barang');
+        idBarangSelect.innerHTML = '<option value="">-- Pilih ID Barang --</option>';
+        for(let i=1; i<data.length; i++) {
+          idBarangSelect.innerHTML += `<option value="${data[i][0]}" data-nama="${data[i][1]}">${data[i][0]}</option>`;
+        }
+
+      } catch(err) {
+        document.getElementById('inventarisContainer').innerText = "Gagal memuat inventaris.";
+        console.error(err);
       }
+    }
 
-      let html = "<table><tr>";
-      data[0].forEach(h => html += `<th>${h}</th>`);
-      html += "</tr>";
-
-      for (let i = 1; i < data.length; i++) {
-        html += "<tr>";
-        data[i].forEach(cell => html += `<td>${cell}</td>`);
-        html += "</tr>";
-      }
-
-      html += "</table>";
-      container.innerHTML = html;
-    })
-    .catch(err => {
-      document.getElementById("tabelInventaris").innerText = "Gagal memuat data.";
-      console.error(err);
+    // Update nama barang saat ID barang dipilih
+    document.getElementById('id_barang').addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      document.getElementById('nama_barang').value = selectedOption.getAttribute('data-nama') || "";
     });
-}
 
-function ajukanPeminjaman(e) {
-  e.preventDefault();
-  const nama_barang = document.getElementById("nama_barang").value.trim();
-  const jumlah = document.getElementById("jumlah").value;
-  const tanggal_pinjam = document.getElementById("tanggal_pinjam").value;
-  const tanggal_kembali = document.getElementById("tanggal_kembali").value;
-  const nama_peminjam = localStorage.getItem("username") || "Guru";
+    // Kirim form pengajuan
+    document.getElementById('formPeminjaman').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const params = new URLSearchParams({ action: "ajukanPeminjaman" });
+      formData.forEach((v, k) => params.append(k, v));
 
-  const today = new Date().toISOString().split("T")[0];
-
-  const url = `${scriptURL}?action=ajukanPeminjaman&tanggal_pengajuan=${today}&nama_peminjam=${encodeURIComponent(nama_peminjam)}&nama_barang=${encodeURIComponent(nama_barang)}&jumlah=${jumlah}&tanggal_pinjam=${tanggal_pinjam}&tanggal_kembali=${tanggal_kembali}`;
-
-  fetch(url)
-    .then(res => res.json())
-    .then(result => {
-      document.getElementById("message").innerText = result.message;
-      if (result.status === "success") {
-        document.getElementById("formPeminjaman").reset();
+      try {
+        const res = await fetch(`${scriptURL}?${params.toString()}`);
+        const result = await res.json();
+        if(result.status === "success") {
+          alert(result.message);
+          e.target.reset();
+        } else {
+          alert("Gagal: " + result.message);
+        }
+      } catch(err) {
+        alert("Error: " + err.message);
       }
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("message").innerText = "Gagal mengirim pengajuan.";
     });
-}
+
+    // Inisialisasi
+    loadInventaris();
+  </script>
+</body>
+</html>
