@@ -1,27 +1,32 @@
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-document.getElementById("formPeminjaman").addEventListener("submit", async function(e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-  const params = new URLSearchParams({ action: "peminjaman" });
-
-  for (const [key, value] of formData.entries()) {
-    params.append(key, value);
+document.addEventListener("DOMContentLoaded", () => {
+  const nama = localStorage.getItem("username");
+  if (!nama) {
+    alert("Anda belum login.");
+    window.location.href = "index.html";
+    return;
   }
 
-  try {
-    const res = await fetch(`${scriptURL}?${params.toString()}`);
-    const result = await res.json();
-    if (result.status === "success") {
-      document.getElementById("pesan").innerText = "Data peminjaman berhasil dikirim.";
-      form.reset();
-    } else {
-      document.getElementById("pesan").innerText = "Gagal: " + result.message;
+  document.getElementById("nama").value = nama;
+
+  document.getElementById("formPeminjaman").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.append("action", "ajukanPeminjaman");
+
+    try {
+      const res = await fetch(scriptURL, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      document.getElementById("status").innerText = result.message;
+      if (result.status === "success") form.reset();
+    } catch (err) {
+      document.getElementById("status").innerText = "Gagal mengirim.";
+      console.error(err);
     }
-  } catch (err) {
-    document.getElementById("pesan").innerText = "Kesalahan koneksi.";
-    console.error(err);
-  }
+  });
 });
