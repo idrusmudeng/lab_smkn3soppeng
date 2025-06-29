@@ -1,11 +1,12 @@
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-document.getElementById("loginForm").addEventListener("submit", async function (e) {
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
   const messageEl = document.getElementById("message");
+
   messageEl.textContent = "";
 
   if (!username || !password) {
@@ -13,16 +14,11 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     return;
   }
 
+  const url = `${scriptURL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
   try {
-    const res = await fetch(scriptURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
-
-    if (!res.ok) throw new Error("Server error: " + res.status);
-
-    const result = await res.json();
+    const response = await fetch(url);
+    const result = await response.json();
 
     if (result.status === "success") {
       localStorage.setItem("username", username);
@@ -38,8 +34,8 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     } else {
       messageEl.textContent = result.message || "Login gagal.";
     }
-  } catch (err) {
+  } catch (error) {
     messageEl.textContent = "Gagal menghubungi server.";
-    console.error(err);
+    console.error(error);
   }
 });
