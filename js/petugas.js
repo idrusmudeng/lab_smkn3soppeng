@@ -3,11 +3,14 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJ
 document.addEventListener("DOMContentLoaded", () => {
   const role = localStorage.getItem("role");
   if (role !== "petugas") {
+    alert("Anda bukan petugas. Akses ditolak.");
     window.location.href = "index.html";
     return;
   }
 
-  fetchPengajuan();
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  loadPengajuan();
 });
 
 function logout() {
@@ -15,8 +18,7 @@ function logout() {
   window.location.href = "index.html";
 }
 
-// Fungsi fetch data pengajuan dari Google Sheets
-function fetchPengajuan() {
+function loadPengajuan() {
   fetch(scriptURL + "?action=viewPengajuan")
     .then(res => res.json())
     .then(data => {
@@ -26,7 +28,6 @@ function fetchPengajuan() {
         return;
       }
 
-      // Tampilkan header tabel
       let html = `<table border="1" style="width:100%; border-collapse: collapse;">
                     <tr>
                       <th>Tanggal Pengajuan</th>
@@ -40,21 +41,17 @@ function fetchPengajuan() {
                       <th>Aksi</th>
                     </tr>`;
 
-      // Loop data pengajuan mulai dari baris ke-1 (baris 0 = header)
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
         const status = row[6];
         const keterangan = row[7] || "";
 
-        // Tombol approve / reject hanya muncul jika status 'Menunggu Persetujuan'
-        let aksi = "";
+        let aksi = "-";
         if (status === "Menunggu Persetujuan") {
           aksi = `
             <button onclick="updateStatus(${i}, 'Disetujui')">Setujui</button>
             <button onclick="updateStatus(${i}, 'Ditolak')">Tolak</button>
           `;
-        } else {
-          aksi = "-";
         }
 
         html += `<tr>
@@ -78,18 +75,15 @@ function fetchPengajuan() {
     });
 }
 
-// Fungsi update status pengajuan (disetujui/ditolak)
 function updateStatus(rowIndex, status) {
   let keterangan = "";
   if (status === "Ditolak") {
     keterangan = prompt("Masukkan keterangan penolakan (opsional):", "");
     if (keterangan === null) {
-      // User batal input
-      return;
+      return; // batal update
     }
   }
 
-  // Kirim update ke backend
   const params = new URLSearchParams({
     action: "updatePengajuan",
     rowIndex: rowIndex,
@@ -102,7 +96,7 @@ function updateStatus(rowIndex, status) {
     .then(result => {
       alert(result.message);
       if (result.status === "success") {
-        fetchPengajuan();  // refresh data setelah update
+        loadPengajuan();
       }
     })
     .catch(() => {
