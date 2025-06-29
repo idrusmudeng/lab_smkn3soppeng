@@ -1,87 +1,111 @@
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-// Cek role
-const role = localStorage.getItem("role");
-const username = localStorage.getItem("username");
-
-if (role !== "petugas") {
-  alert("Akses ditolak. Anda bukan petugas.");
-  window.location.href = "index.html";
-}
-
-// Tampilkan nama pengguna
-document.getElementById("username").innerText = username;
-
-// Logout
-document.getElementById("logout").addEventListener("click", function () {
-  localStorage.clear();
-  window.location.href = "index.html";
-});
-
-// Ambil data inventaris
-async function loadInventaris() {
-  try {
-    const res = await fetch(`${scriptURL}?action=viewInventaris`);
-    const data = await res.json();
-    console.log("Inventaris:", data);
-    renderTable(data);
-  } catch (error) {
-    document.getElementById("table-container").innerText = "Gagal memuat data.";
-    console.error("Error:", error);
-  }
-}
-
-document.getElementById("formTambah").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const formData = new FormData(form);
-  const params = new URLSearchParams({ action: "tambah" });
-
-  for (const [key, value] of formData.entries()) {
-    params.append(key, value);
-  }
-
-  try {
-    const res = await fetch(`${scriptURL}?${params.toString()}`);
-    const result = await res.json();
-    console.log("Respon tambah:", result);
-    if (result.status === "success") {
-      alert("Data berhasil ditambahkan.");
-      form.reset();
-      loadInventaris();
-    } else {
-      alert("Gagal tambah data: " + result.message);
-    }
-  } catch (err) {
-    console.error("Tambah error:", err);
-    alert("Gagal mengirim data.");
-  }
-});
-
-
-// Render tabel
-function renderTable(data) {
-  if (!data || data.length === 0) {
-    document.getElementById("table-container").innerText = "Data kosong.";
+document.addEventListener("DOMContentLoaded", () => {
+  const role = localStorage.getItem("role");
+  if (role !== "petugas") {
+    window.location.href = "index.html";
     return;
   }
 
-  const headers = data[0];
-  let html = "<table><thead><tr>";
-  headers.forEach(header => html += `<th>${header}</th>`);
-  html += "</tr></thead><tbody>";
+  fetchPengajuan();
+});
 
-  for (let i = 1; i < data.length; i++) {
-    html += "<tr>";
-    data[i].forEach(cell => html += `<td>${cell}</td>`);
-    html += "</tr>";
-  }
-
-  html += "</tbody></table>";
-  document.getElementById("table-container").innerHTML = html;
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
 }
 
-// Jalankan saat halaman dimuat
-loadInventaris();
-console.log("Script petugas.js aktif");
+// Fungsi fetch data pengajuan dari Google Sheets
+function fetchPengajuan() {
+  fetch(scriptURL + "?action=viewPengajuan")
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("tabelPengajuan");
+      if (!data || data.length === 0) {
+        container.innerHTML = "Belum ada pengajuan.";
+        return;
+      }
+
+      // Tampilkan header tabel
+      let html = `<table border="1" style="width:100%; border-collapse: collapse;">
+                    <tr>
+                      <th>Tanggal Pengajuan</th>
+                      <th>Nama Peminjam</th>
+                      <th>Nama Barang</th>
+                      <th>Jumlah</th>
+                      <th>Tanggal Pinjam</th>
+                      <th>Tanggal Kembali</th>
+                      <th>Status</th>
+                      <th>Keterangan</th>
+                      <th>Aksi</th>
+                    </tr>`;
+
+      // Loop data pengajuan mulai dari baris ke-1 (baris 0 = header)
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const status = row[6];
+        const keterangan = row[7] || "";
+
+        // Tombol approve / reject hanya muncul jika status 'Menunggu Persetujuan'
+        let aksi = "";
+        if (status === "Menunggu Persetujuan") {
+          aksi = `
+            <button onclick="updateStatus(${i}, 'Disetujui')">Setujui</button>
+            <button onclick="updateStatus(${i}, 'Ditolak')">Tolak</button>
+          `;
+        } else {
+          aksi = "-";
+        }
+
+        html += `<tr>
+          <td>${row[0]}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${status}</td>
+          <td>${keterangan}</td>
+          <td>${aksi}</td>
+        </tr>`;
+      }
+
+      html += "</table>";
+      container.innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById("tabelPengajuan").innerHTML = "Gagal memuat data pengajuan.";
+    });
+}
+
+// Fungsi update status pengajuan (disetujui/ditolak)
+function updateStatus(rowIndex, status) {
+  let keterangan = "";
+  if (status === "Ditolak") {
+    keterangan = prompt("Masukkan keterangan penolakan (opsional):", "");
+    if (keterangan === null) {
+      // User batal input
+      return;
+    }
+  }
+
+  // Kirim update ke backend
+  const params = new URLSearchParams({
+    action: "updatePengajuan",
+    rowIndex: rowIndex,
+    status: status,
+    keterangan: keterangan
+  });
+
+  fetch(scriptURL + "?" + params.toString())
+    .then(res => res.json())
+    .then(result => {
+      alert(result.message);
+      if (result.status === "success") {
+        fetchPengajuan();  // refresh data setelah update
+      }
+    })
+    .catch(() => {
+      alert("Gagal update status pengajuan.");
+    });
+}
