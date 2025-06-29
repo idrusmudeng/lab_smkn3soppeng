@@ -2,33 +2,75 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login Inventaris</title>
-  <link rel="stylesheet" href="css/style.css">
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f0f0f0;
+    }
+    .login-container {
+      max-width: 320px;
+      margin: 0 auto;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input[type=text], input[type=password] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
     .message {
       color: red;
-      margin-top: 10px;
+      margin-top: 1rem;
       min-height: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Sistem Inventaris Lab</h2>
-    <h2>SMK Negeri 3 Soppeng</h2>    
-    <form id="loginForm">
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required>
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required autocomplete="off">
+<div class="login-container">
+  <h2>Sistem Inventaris Lab</h2>
+  <h3>SMK Negeri 3 Soppeng</h3>
+  <form id="loginForm">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required autocomplete="off" />
 
-      <button type="submit">Login</button>
-      <p id="message" class="message"></p>
-    </form>
-  </div>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required autocomplete="off" />
 
-  <script src="js/login.js"></script>
+    <button type="submit">Login</button>
+    <p id="message" class="message"></p>
+  </form>
+</div>
+
+<script src="js/login.js"></script>
 </body>
 </html>
