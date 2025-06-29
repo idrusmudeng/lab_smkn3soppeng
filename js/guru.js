@@ -107,3 +107,35 @@ function renderTable(data) {
   html += "</tbody></table>";
   container.innerHTML = html;
 }
+document.getElementById("formPeminjaman").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const nama_peminjam = document.getElementById("nama_peminjam").value;
+  const nama_barang = document.getElementById("nama_barang").value;
+  const jumlah = document.getElementById("jumlah").value;
+  const tanggal_pinjam = document.getElementById("tanggal_pinjam").value;
+  const tanggal_kembali = document.getElementById("tanggal_kembali").value;
+
+  const url = `${scriptURL}?action=ajukanPeminjaman` +
+              `&tanggal_pengajuan=${encodeURIComponent(new Date().toISOString())}` +
+              `&nama_peminjam=${encodeURIComponent(nama_peminjam)}` +
+              `&nama_barang=${encodeURIComponent(nama_barang)}` +
+              `&jumlah=${encodeURIComponent(jumlah)}` +
+              `&tanggal_pinjam=${encodeURIComponent(tanggal_pinjam)}` +
+              `&tanggal_kembali=${encodeURIComponent(tanggal_kembali)}`;
+
+  try {
+    const res = await fetch(url);
+    const result = await res.json();
+
+    if (result.status === "success") {
+      document.getElementById("pesanPeminjaman").innerText = "Pengajuan berhasil dikirim.";
+      e.target.reset();
+    } else {
+      document.getElementById("pesanPeminjaman").innerText = "Gagal: " + result.message;
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    document.getElementById("pesanPeminjaman").innerText = "Gagal mengirim pengajuan.";
+  }
+});
