@@ -1,48 +1,30 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Form Peminjaman</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    label { display: block; margin-top: 10px; }
-    input, textarea, select {
-      width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;
-    }
-    button {
-      margin-top: 15px; padding: 10px 20px; background-color: #3498db;
-      color: white; border: none; border-radius: 4px; cursor: pointer;
-    }
-    button:hover { background-color: #2980b9; }
-  </style>
+  <title>Form Peminjaman Barang</title>
+  <script src="form_peminjaman.js"></script>
 </head>
 <body>
   <h2>Form Peminjaman Barang</h2>
-
   <form id="formPeminjaman">
-    <label for="nama">Nama Peminjam</label>
-    <input type="text" id="nama" name="nama" required>
+    <label>Nama Peminjam:</label><br>
+    <input type="text" name="nama" id="nama" readonly><br><br>
 
-    <label for="barang">Nama Barang</label>
-    <input type="text" id="barang" name="barang" required>
+    <label>Nama Barang:</label><br>
+    <input type="text" name="nama_barang" required><br><br>
 
-    <label for="jumlah">Jumlah</label>
-    <input type="number" id="jumlah" name="jumlah" required>
+    <label>Jumlah:</label><br>
+    <input type="number" name="jumlah" required><br><br>
 
-    <label for="tanggal_pinjam">Tanggal Pinjam</label>
-    <input type="date" id="tanggal_pinjam" name="tanggal_pinjam" required>
+    <label>Tanggal Pinjam:</label><br>
+    <input type="date" name="tanggal_pinjam" required><br><br>
 
-    <label for="tanggal_kembali">Tanggal Kembali</label>
-    <input type="date" id="tanggal_kembali" name="tanggal_kembali">
+    <label>Tanggal Kembali (perkiraan):</label><br>
+    <input type="date" name="tanggal_kembali"><br><br>
 
-    <label for="keterangan">Keterangan</label>
-    <textarea id="keterangan" name="keterangan"></textarea>
-
-    <button type="submit">Kirim</button>
+    <button type="submit">Ajukan</button>
   </form>
 
-  <div id="pesan"></div>
-
-  <script src="js/peminjaman.js"></script>
+  <div id="status"></div>
 </body>
 </html>
