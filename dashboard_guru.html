@@ -4,14 +4,60 @@
   <meta charset="UTF-8" />
   <title>Dashboard Guru</title>
   <style>
+    /* Styling tabel inventaris */
     table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     th { background-color: #f2f2f2; }
-    form { margin-bottom: 20px; }
-    label { display: block; margin: 5px 0 2px; }
-    input, select { width: 100%; padding: 6px; box-sizing: border-box; }
-    button { margin-top: 10px; padding: 10px 20px; background: #28a745; border: none; color: white; cursor: pointer; }
+
+    /* Styling tombol */
+    button { padding: 8px 15px; background: #28a745; border: none; color: white; cursor: pointer; border-radius: 4px; }
     button:hover { background: #218838; }
+
+    /* Modal styling */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      right: 10px; top: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #888;
+    }
+    .close-btn:hover {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 7px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
@@ -19,110 +65,145 @@
 
   <div>
     <h2>Inventaris Barang</h2>
-    <div id="inventarisContainer"></div>
+    <div id="inventarisContainer">Memuat data...</div>
   </div>
 
-  <div>
-    <h2>Ajukan Peminjaman</h2>
-    <form id="formPeminjaman">
-      <label for="nama_peminjam">Nama Peminjam</label>
-      <input type="text" id="nama_peminjam" name="nama_peminjam" required autocomplete="off" />
+  <button id="openModalBtn">Ajukan Peminjaman</button>
 
-      <label for="id_barang">ID Barang</label>
-      <select id="id_barang" name="id_barang" required></select>
+  <!-- Modal -->
+  <div id="modalForm" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModalBtn">&times;</span>
+      <h3>Form Pengajuan Peminjaman</h3>
+      <form id="formPeminjaman">
+        <label for="nama_peminjam">Nama Peminjam</label>
+        <input type="text" id="nama_peminjam" name="nama_peminjam" required autocomplete="off" />
 
-      <label for="nama_barang">Nama Barang</label>
-      <input type="text" id="nama_barang" name="nama_barang" readonly />
+        <label for="id_barang">ID Barang</label>
+        <select id="id_barang" name="id_barang" required></select>
 
-      <label for="jumlah">Jumlah</label>
-      <input type="number" id="jumlah" name="jumlah" min="1" required />
+        <label for="nama_barang">Nama Barang</label>
+        <input type="text" id="nama_barang" name="nama_barang" readonly />
 
-      <label for="tanggal_pinjam">Tanggal Pinjam</label>
-      <input type="date" id="tanggal_pinjam" name="tanggal_pinjam" required />
+        <label for="jumlah">Jumlah</label>
+        <input type="number" id="jumlah" name="jumlah" min="1" required />
 
-      <label for="tanggal_kembali">Tanggal Kembali</label>
-      <input type="date" id="tanggal_kembali" name="tanggal_kembali" required />
+        <label for="tanggal_pinjam">Tanggal Pinjam</label>
+        <input type="date" id="tanggal_pinjam" name="tanggal_pinjam" required />
 
-      <button type="submit">Ajukan</button>
-    </form>
+        <label for="tanggal_kembali">Tanggal Kembali</label>
+        <input type="date" id="tanggal_kembali" name="tanggal_kembali" required />
+
+        <button type="submit" style="margin-top: 15px;">Kirim Pengajuan</button>
+      </form>
+    </div>
   </div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-    // Load inventaris dan isi dropdown ID Barang
+    // Load inventaris dan tampilkan di tabel & isi dropdown id_barang
     async function loadInventaris() {
+      const container = document.getElementById('inventarisContainer');
       try {
         const res = await fetch(`${scriptURL}?action=viewInventaris`);
         const data = await res.json();
         if (!data || data.length < 2) {
-          document.getElementById('inventarisContainer').innerText = "Data inventaris kosong.";
+          container.innerText = "Data inventaris kosong.";
           return;
         }
 
-        // Tampilkan tabel inventaris
+        // Buat tabel
         let html = "<table><thead><tr>";
-        data[0].forEach(h => {
-          if (["ID_BARANG","NAMA_BARANG","KATEGORI","JUMLAH","KETERANGAN"].includes(h)) {
-            html += `<th>${h}</th>`;
-          }
-        });
+        const headers = data[0];
+        // Kolom yang mau ditampilkan:
+        const showCols = ["ID_BARANG","NAMA_BARANG","KATEGORI","JUMLAH","KETERANGAN"];
+        for (let h of headers) {
+          if (showCols.includes(h)) html += `<th>${h}</th>`;
+        }
         html += "</tr></thead><tbody>";
 
-        for(let i=1; i < data.length; i++) {
+        for (let i=1; i<data.length; i++) {
           const row = data[i];
           html += "<tr>";
-          row.forEach((cell, idx) => {
-            if (["ID_BARANG","NAMA_BARANG","KATEGORI","JUMLAH","KETERANGAN"].includes(data[0][idx])) {
-              html += `<td>${cell}</td>`;
+          for (let j=0; j<headers.length; j++) {
+            if (showCols.includes(headers[j])) {
+              html += `<td>${row[j]}</td>`;
             }
-          });
+          }
           html += "</tr>";
         }
         html += "</tbody></table>";
-        document.getElementById('inventarisContainer').innerHTML = html;
+        container.innerHTML = html;
 
-        // Isi dropdown ID Barang
-        const idBarangSelect = document.getElementById('id_barang');
-        idBarangSelect.innerHTML = '<option value="">-- Pilih ID Barang --</option>';
-        for(let i=1; i<data.length; i++) {
-          idBarangSelect.innerHTML += `<option value="${data[i][0]}" data-nama="${data[i][1]}">${data[i][0]}</option>`;
+        // Isi dropdown id_barang
+        const select = document.getElementById('id_barang');
+        select.innerHTML = '<option value="">-- Pilih ID Barang --</option>';
+        for (let i=1; i<data.length; i++) {
+          const idBarang = data[i][0];
+          const namaBarang = data[i][1];
+          select.innerHTML += `<option value="${idBarang}" data-nama="${namaBarang}">${idBarang}</option>`;
         }
-
       } catch(err) {
-        document.getElementById('inventarisContainer').innerText = "Gagal memuat inventaris.";
+        container.innerText = "Gagal memuat data inventaris.";
         console.error(err);
       }
     }
 
-    // Update nama barang saat ID barang dipilih
+    // Update nama_barang otomatis saat id_barang dipilih
     document.getElementById('id_barang').addEventListener('change', function() {
-      const selectedOption = this.options[this.selectedIndex];
-      document.getElementById('nama_barang').value = selectedOption.getAttribute('data-nama') || "";
+      const nama = this.options[this.selectedIndex].getAttribute('data-nama') || "";
+      document.getElementById('nama_barang').value = nama;
     });
 
-    // Kirim form pengajuan
-    document.getElementById('formPeminjaman').addEventListener('submit', async function(e) {
+    // Form modal control
+    const modal = document.getElementById('modalForm');
+    document.getElementById('openModalBtn').addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      modal.style.display = 'none';
+      document.getElementById('formPeminjaman').reset();
+    });
+    window.addEventListener('click', e => {
+      if(e.target === modal) {
+        modal.style.display = 'none';
+        document.getElementById('formPeminjaman').reset();
+      }
+    });
+
+    // Kirim pengajuan form
+    document.getElementById('formPeminjaman').addEventListener('submit', async e => {
       e.preventDefault();
-      const formData = new FormData(e.target);
+      const form = e.target;
+      const formData = new FormData(form);
+
+      // Validasi jumlah > 0
+      if (Number(formData.get('jumlah')) <= 0) {
+        alert("Jumlah harus lebih dari 0");
+        return;
+      }
+
+      // Kirim GET request dengan parameter query
       const params = new URLSearchParams({ action: "ajukanPeminjaman" });
-      formData.forEach((v, k) => params.append(k, v));
+      formData.forEach((value, key) => params.append(key, value));
 
       try {
         const res = await fetch(`${scriptURL}?${params.toString()}`);
         const result = await res.json();
-        if(result.status === "success") {
+        if (result.status === "success") {
           alert(result.message);
-          e.target.reset();
+          modal.style.display = 'none';
+          form.reset();
         } else {
           alert("Gagal: " + result.message);
         }
-      } catch(err) {
+      } catch (err) {
         alert("Error: " + err.message);
       }
     });
 
-    // Inisialisasi
+    // Load data saat halaman siap
     loadInventaris();
   </script>
 </body>
