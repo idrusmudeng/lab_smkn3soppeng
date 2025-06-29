@@ -2,115 +2,23 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard Petugas</title>
-  <style>
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    button { padding: 5px 10px; margin-right: 5px; cursor: pointer; }
-    .approve { background-color: #28a745; color: white; border: none; }
-    .reject { background-color: #dc3545; color: white; border: none; }
-  </style>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h1>Dashboard Petugas - Pengajuan Peminjaman</h1>
-  <table id="tablePengajuan">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Tanggal Pengajuan</th>
-        <th>Nama Peminjam</th>
-        <th>ID Barang</th>
-        <th>Nama Barang</th>
-        <th>Jumlah</th>
-        <th>Tanggal Pinjam</th>
-        <th>Tanggal Kembali</th>
-        <th>Status</th>
-        <th>Keterangan</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Data pengajuan akan dimuat di sini -->
-    </tbody>
-  </table>
+  <div class="container">
+    <header>
+      <h1>Dashboard Petugas</h1>
+      <button id="logoutBtn">Logout</button>
+    </header>
 
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+    <section>
+      <h2>Daftar Pengajuan Peminjaman</h2>
+      <div id="tabelPengajuan"></div>
+    </section>
+  </div>
 
-    async function loadPengajuan() {
-      try {
-        const res = await fetch(`${scriptURL}?action=viewPengajuan`);
-        const data = await res.json();
-        const tbody = document.querySelector("#tablePengajuan tbody");
-        tbody.innerHTML = "";
-
-        if (!data || data.length < 2) {
-          tbody.innerHTML = "<tr><td colspan='11'>Belum ada pengajuan.</td></tr>";
-          return;
-        }
-
-        // Data header dan baris mulai index 1
-        for(let i=1; i<data.length; i++) {
-          const row = data[i];
-          const rowIndex = i+1; // baris sheet (index +1 header +1)
-          tbody.innerHTML += `
-            <tr>
-              <td>${i}</td>
-              <td>${row[0]}</td>
-              <td>${row[1]}</td>
-              <td>${row[2]}</td>
-              <td>${row[3]}</td>
-              <td>${row[4]}</td>
-              <td>${row[5]}</td>
-              <td>${row[6]}</td>
-              <td>${row[7]}</td>
-              <td>${row[8]}</td>
-              <td>
-                ${row[7] === "Menunggu Persetujuan" ? `
-                  <button class="approve" data-row="${rowIndex}">Setuju</button>
-                  <button class="reject" data-row="${rowIndex}">Tolak</button>
-                ` : "-"}
-              </td>
-            </tr>`;
-        }
-
-        // Pasang event listener tombol approve & reject
-        document.querySelectorAll(".approve").forEach(btn => {
-          btn.addEventListener("click", () => approvePengajuan(btn.dataset.row, "setuju"));
-        });
-        document.querySelectorAll(".reject").forEach(btn => {
-          btn.addEventListener("click", () => approvePengajuan(btn.dataset.row, "tolak"));
-        });
-
-      } catch(err) {
-        alert("Gagal memuat data pengajuan: " + err.message);
-      }
-    }
-
-    async function approvePengajuan(rowIndex, decision) {
-      const keterangan = prompt("Tambahkan keterangan (boleh kosong):", "");
-      try {
-        const params = new URLSearchParams({
-          action: "approvePeminjaman",
-          rowIndex,
-          decision,
-          keterangan
-        });
-        const res = await fetch(`${scriptURL}?${params.toString()}`);
-        const result = await res.json();
-        if(result.status === "success") {
-          alert(result.message);
-          loadPengajuan();
-        } else {
-          alert("Gagal: " + result.message);
-        }
-      } catch(err) {
-        alert("Error: " + err.message);
-      }
-    }
-
-    loadPengajuan();
-  </script>
+  <script src="js/petugas.js"></script>
 </body>
 </html>
