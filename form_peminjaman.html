@@ -1,30 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+  <meta charset="UTF-8">
   <title>Form Peminjaman Barang</title>
-  <script src="form_peminjaman.js"></script>
+  <link rel="stylesheet" href="style.css"> <!-- opsional -->
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { margin-bottom: 20px; }
+    form > div { margin-bottom: 10px; }
+    input, select {
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .success, .error {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
 </head>
 <body>
+
   <h2>Form Peminjaman Barang</h2>
+
   <form id="formPeminjaman">
-    <label>Nama Peminjam:</label><br>
-    <input type="text" name="nama" id="nama" readonly><br><br>
-
-    <label>Nama Barang:</label><br>
-    <input type="text" name="nama_barang" required><br><br>
-
-    <label>Jumlah:</label><br>
-    <input type="number" name="jumlah" required><br><br>
-
-    <label>Tanggal Pinjam:</label><br>
-    <input type="date" name="tanggal_pinjam" required><br><br>
-
-    <label>Tanggal Kembali (perkiraan):</label><br>
-    <input type="date" name="tanggal_kembali"><br><br>
-
-    <button type="submit">Ajukan</button>
+    <div>
+      <label>Nama Peminjam:</label>
+      <input type="text" name="nama_peminjam" required>
+    </div>
+    <div>
+      <label>Nama Barang:</label>
+      <input type="text" name="nama_barang" required>
+    </div>
+    <div>
+      <label>Jumlah:</label>
+      <input type="number" name="jumlah" required min="1">
+    </div>
+    <div>
+      <label>Tanggal Pinjam:</label>
+      <input type="date" name="tanggal_pinjam" required>
+    </div>
+    <div>
+      <label>Tanggal Kembali:</label>
+      <input type="date" name="tanggal_kembali" required>
+    </div>
+    <button type="submit">Ajukan Peminjaman</button>
+    <div id="pesan" class=""></div>
   </form>
 
-  <div id="status"></div>
+  <br>
+  <button onclick="window.location.href='dashboard_guru.html'">Kembali ke Dashboard</button>
+
+  <script src="peminjaman.js"></script>
 </body>
 </html>
