@@ -3,16 +3,26 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJ
 document.getElementById("loginForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const username = encodeURIComponent(document.getElementById("username").value.trim());
-  const password = encodeURIComponent(document.getElementById("password").value.trim());
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const messageEl = document.getElementById("message");
+  messageEl.textContent = "";
 
-  const loginURL = `${scriptURL}?action=login&username=${username}&password=${password}`;
-  console.log("Login request to:", loginURL);
+  if (!username || !password) {
+    messageEl.textContent = "Username dan password harus diisi.";
+    return;
+  }
 
   try {
-    const res = await fetch(loginURL);
+    const res = await fetch(scriptURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    if (!res.ok) throw new Error("Server error: " + res.status);
+
     const result = await res.json();
-    console.log("Login result:", result);
 
     if (result.status === "success") {
       localStorage.setItem("username", username);
@@ -23,13 +33,13 @@ document.getElementById("loginForm").addEventListener("submit", async function (
       } else if (result.role === "petugas") {
         window.location.href = "dashboard_petugas.html";
       } else {
-        document.getElementById("message").innerText = "Role tidak dikenali.";
+        messageEl.textContent = "Role tidak dikenali.";
       }
     } else {
-      document.getElementById("message").innerText = result.message;
+      messageEl.textContent = result.message || "Login gagal.";
     }
-  } catch (error) {
-    console.error("Fetch error:", error);
-    document.getElementById("message").innerText = "Gagal menghubungi server.";
+  } catch (err) {
+    messageEl.textContent = "Gagal menghubungi server.";
+    console.error(err);
   }
 });
