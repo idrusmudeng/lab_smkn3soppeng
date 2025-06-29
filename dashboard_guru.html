@@ -1,111 +1,62 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard Guru</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      margin: 20px;
-      background-color: #f9f9f9;
-      color: #333;
-    }
+const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-    h2 {
-      margin-bottom: 10px;
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  fetchInventaris();
 
-    button {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+  document.getElementById("formPeminjaman").addEventListener("submit", ajukanPeminjaman);
+});
 
-    button:hover {
-      background-color: #c0392b;
-    }
+function fetchInventaris() {
+  fetch(`${scriptURL}?action=viewInventaris`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("tabelInventaris");
+      if (data.length === 0) {
+        container.innerHTML = "Tidak ada data.";
+        return;
+      }
 
-    select, input[type="text"] {
-      padding: 6px;
-      margin-right: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
+      let html = "<table><tr>";
+      data[0].forEach(h => html += `<th>${h}</th>`);
+      html += "</tr>";
 
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 20px;
-      background-color: white;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-    }
+      for (let i = 1; i < data.length; i++) {
+        html += "<tr>";
+        data[i].forEach(cell => html += `<td>${cell}</td>`);
+        html += "</tr>";
+      }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-    }
+      html += "</table>";
+      container.innerHTML = html;
+    })
+    .catch(err => {
+      document.getElementById("tabelInventaris").innerText = "Gagal memuat data.";
+      console.error(err);
+    });
+}
 
-    th {
-      background-color: #3498db;
-      color: white;
-      position: sticky;
-      top: 0;
-    }
+function ajukanPeminjaman(e) {
+  e.preventDefault();
+  const nama_barang = document.getElementById("nama_barang").value.trim();
+  const jumlah = document.getElementById("jumlah").value;
+  const tanggal_pinjam = document.getElementById("tanggal_pinjam").value;
+  const tanggal_kembali = document.getElementById("tanggal_kembali").value;
+  const nama_peminjam = localStorage.getItem("username") || "Guru";
 
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
+  const today = new Date().toISOString().split("T")[0];
 
-    #filter-container {
-      margin-top: 15px;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body>
-  <h2>📋 Dashboard Inventaris Guru</h2>
-  <button onclick="logout()">Logout</button>
+  const url = `${scriptURL}?action=ajukanPeminjaman&tanggal_pengajuan=${today}&nama_peminjam=${encodeURIComponent(nama_peminjam)}&nama_barang=${encodeURIComponent(nama_barang)}&jumlah=${jumlah}&tanggal_pinjam=${tanggal_pinjam}&tanggal_kembali=${tanggal_kembali}`;
 
-  <div id="filter-container">
-    <input type="text" id="searchInput" placeholder="Cari barang...">
-    
-    <label for="filterKategori">Kategori:</label>
-    <select id="filterKategori">
-      <option value="">-- Semua --</option>
-    </select>
-
-    <label for="filterLokasi">Lokasi:</label>
-    <select id="filterLokasi">
-      <option value="">-- Semua --</option>
-    </select>
-  </div>
-
-  <div id="tabelInventaris">Memuat data...</div>
-<h3>Form Pengajuan Peminjaman</h3>
-<form id="formPeminjaman">
-  <label>Nama Peminjam</label>
-  <input type="text" id="nama_peminjam" required />
-
-  <label>Nama Barang</label>
-  <input type="text" id="nama_barang" required />
-
-  <label>Jumlah</label>
-  <input type="number" id="jumlah" required min="1" />
-
-  <label>Tanggal Pinjam</label>
-  <input type="date" id="tanggal_pinjam" required />
-
-  <label>Tanggal Kembali</label>
-  <input type="date" id="tanggal_kembali" required />
-
-  <button type="submit">Ajukan Peminjaman</button>
-  <p id="pesanPeminjaman"></p>
-</form>
-
-  <script src="js/guru.js"></script>
-</body>
-</html>
+  fetch(url)
+    .then(res => res.json())
+    .then(result => {
+      document.getElementById("message").innerText = result.message;
+      if (result.status === "success") {
+        document.getElementById("formPeminjaman").reset();
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("message").innerText = "Gagal mengirim pengajuan.";
+    });
+}
