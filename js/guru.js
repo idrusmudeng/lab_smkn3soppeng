@@ -3,12 +3,15 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJ
 document.addEventListener("DOMContentLoaded", () => {
   const role = localStorage.getItem("role");
   if (role !== "guru") {
+    alert("Anda bukan guru. Akses ditolak.");
     window.location.href = "index.html";
     return;
   }
 
-  fetchInventaris();
-  loadPengajuan();
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+  document.getElementById("formPengajuan").addEventListener("submit", ajukanPeminjaman);
+
+  loadInventaris();
 });
 
 function logout() {
@@ -16,93 +19,82 @@ function logout() {
   window.location.href = "index.html";
 }
 
-function fetchInventaris() {
+function loadInventaris() {
   fetch(scriptURL + "?action=viewInventaris")
     .then(res => res.json())
     .then(data => {
       const container = document.getElementById("tabelInventaris");
       if (!data || data.length === 0) {
-        container.innerHTML = "Tidak ada data.";
+        container.innerHTML = "Tidak ada data inventaris.";
         return;
       }
 
-      const maxCol = 13; // Batasi sampai kolom KETERANGAN
-      let html = "<table border='1'><tr>";
-      data[0].slice(0, maxCol).forEach(h => html += `<th>${h}</th>`);
-      html += "</tr>";
+      // Buat tabel inventaris, tampilkan sampai kolom KETERANGAN saja (index 12)
+      let html = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+      html += "<thead><tr>";
+
+      // Header kolom sampai index 12
+      for (let i = 0; i <= 12; i++) {
+        html += `<th>${data[0][i]}</th>`;
+      }
+      html += "</tr></thead><tbody>";
 
       for (let i = 1; i < data.length; i++) {
         html += "<tr>";
-        data[i].slice(0, maxCol).forEach(cell => html += `<td>${cell}</td>`);
+        for (let j = 0; j <= 12; j++) {
+          html += `<td>${data[i][j] || ""}</td>`;
+        }
         html += "</tr>";
       }
 
-      html += "</table>";
+      html += "</tbody></table>";
       container.innerHTML = html;
+    })
+    .catch(() => {
+      document.getElementById("tabelInventaris").innerHTML = "Gagal memuat data inventaris.";
     });
 }
 
-// Load riwayat pengajuan peminjaman khusus user
-function loadPengajuan() {
-  const username = localStorage.getItem("username");
-  fetch(scriptURL + "?action=viewPengajuan")
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("tabelPengajuan");
-      if (!data || data.length === 0) {
-        container.innerHTML = "Belum ada pengajuan.";
-        return;
-      }
-      
-      // Filter hanya pengajuan milik user ini
-      const userPengajuan = data.filter(row => row[1] === username);
-
-      let html = "<table border='1'><tr><th>Tanggal Pengajuan</th><th>Nama Barang</th><th>Jumlah</th><th>Tanggal Pinjam</th><th>Tanggal Kembali</th><th>Status</th><th>Keterangan</th></tr>";
-      userPengajuan.forEach(row => {
-        html += `<tr>
-          <td>${row[0]}</td>
-          <td>${row[2]}</td>
-          <td>${row[3]}</td>
-          <td>${row[4]}</td>
-          <td>${row[5]}</td>
-          <td>${row[6]}</td>
-          <td>${row[7]}</td>
-        </tr>`;
-      });
-      html += "</table>";
-      container.innerHTML = html;
-    });
-}
-
-// Event listener untuk form pengajuan peminjaman
-document.getElementById("formPengajuan").addEventListener("submit", function(e) {
+function ajukanPeminjaman(e) {
   e.preventDefault();
 
-  const tanggal_pengajuan = new Date().toLocaleDateString();
-  const nama_peminjam = localStorage.getItem("username");
-  const nama_barang = e.target.nama_barang.value;
-  const jumlah = e.target.jumlah.value;
-  const tanggal_pinjam = e.target.tanggal_pinjam.value;
-  const tanggal_kembali = e.target.tanggal_kembali.value;
+  const namaPeminjam = document.getElementById("namaPeminjam").value.trim();
+  const namaBarang = document.getElementById("namaBarang").value.trim();
+  const jumlah = document.getElementById("jumlah").value.trim();
+  const tanggalPinjam = document.getElementById("tglPinjam").value;
+  const tanggalKembali = document.getElementById("tglKembali").value;
+
+  if (!namaPeminjam || !namaBarang || !jumlah || !tanggalPinjam || !tanggalKembali) {
+    alert("Semua field harus diisi.");
+    return;
+  }
+
+  const tanggalPengajuan = new Date().toISOString().slice(0, 10);
 
   const params = new URLSearchParams({
     action: "ajukanPeminjaman",
-    tanggal_pengajuan,
-    nama_peminjam,
-    nama_barang,
-    jumlah,
-    tanggal_pinjam,
-    tanggal_kembali
+    tanggal_pengajuan: tanggalPengajuan,
+    nama_peminjam: namaPeminjam,
+    nama_barang: namaBarang,
+    jumlah: jumlah,
+    tanggal_pinjam: tanggalPinjam,
+    tanggal_kembali: tanggalKembali
   });
 
   fetch(scriptURL + "?" + params.toString())
     .then(res => res.json())
     .then(result => {
-      alert(result.message);
+      const msg = document.getElementById("messagePengajuan");
       if (result.status === "success") {
+        msg.style.color = "green";
+        msg.textContent = result.message;
         e.target.reset();
-        loadPengajuan();
+      } else {
+        msg.style.color = "red";
+        msg.textContent = result.message || "Gagal mengajukan peminjaman.";
       }
     })
-    .catch(() => alert("Gagal mengirim pengajuan."));
-});
+    .catch(() => {
+      alert("Gagal menghubungi server.");
+    });
+}
