@@ -3,48 +3,226 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Form Peminjaman Barang</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Form Peminjaman - SMKN 3 Soppeng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --danger: #EF4444;
+      --text: #1F2937;
+      --light: #F3F4F6;
+      --white: #FFFFFF;
+      --gray: #9CA3AF;
+      --border: #E5E7EB;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 25px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .form-header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-header h1 {
+      font-size: 1.4rem;
+      color: var(--text);
+      margin: 0 0 5px 0;
+    }
+
+    .form-header p {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    #formPengajuan {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .input-group {
+      display: grid;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+
+    input[readonly] {
+      background-color: #F9FAFB;
+      color: #6B7280;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background-color: var(--white);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-secondary:hover {
+      background-color: #F0F7FF;
+    }
+
+    #listBarang {
+      position: absolute;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 20px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Form Peminjaman Barang</h1>
+  <div class="form-container">
+    <div class="form-header">
+      <h1>Form Peminjaman Barang</h1>
+      <p>Laboratorium TKJ SMKN 3 Soppeng</p>
+    </div>
+
     <form id="formPengajuan">
-      <label for="namaPeminjam">Nama Peminjam</label>
-      <input type="text" id="namaPeminjam" required />
+      <div class="input-group">
+        <label for="namaPeminjam">Nama Peminjam</label>
+        <input type="text" id="namaPeminjam" required placeholder="Masukkan nama lengkap">
+      </div>
 
-      <label for="idBarang">ID Barang</label>
-      <input type="text" id="idBarang" list="listBarang" required />
-      <datalist id="listBarang"></datalist>
+      <div class="input-group">
+        <label for="idBarang">ID Barang</label>
+        <input type="text" id="idBarang" list="listBarang" required placeholder="Masukkan atau pilih ID barang">
+        <datalist id="listBarang"></datalist>
+      </div>
 
-      <label for="namaBarang">Nama Barang</label>
-      <input type="text" id="namaBarang" readonly />
+      <div class="input-group">
+        <label for="namaBarang">Nama Barang</label>
+        <input type="text" id="namaBarang" readonly>
+      </div>
 
-      <label for="merkTipe">Merk/Tipe</label>
-      <input type="text" id="merkTipe" readonly />
+      <div class="input-group">
+        <label for="merkTipe">Merk/Tipe</label>
+        <input type="text" id="merkTipe" readonly>
+      </div>
 
-      <label for="spesifikasi">Spesifikasi</label>
-      <input type="text" id="spesifikasi" readonly />
+      <div class="input-group">
+        <label for="spesifikasi">Spesifikasi</label>
+        <input type="text" id="spesifikasi" readonly>
+      </div>
 
-      <label for="serialNumber">Serial Number</label>
-      <input type="text" id="serialNumber" readonly />
+      <div class="input-group">
+        <label for="serialNumber">Serial Number</label>
+        <input type="text" id="serialNumber" readonly>
+      </div>
 
-      <label for="jumlahTersedia">Jumlah Tersedia</label>
-      <input type="text" id="jumlahTersedia" readonly />
+      <div class="input-group">
+        <label for="jumlahTersedia">Jumlah Tersedia</label>
+        <input type="text" id="jumlahTersedia" readonly>
+      </div>
 
-      <label for="kondisi">Kondisi</label>
-      <input type="text" id="kondisi" readonly />
+      <div class="input-group">
+        <label for="kondisi">Kondisi</label>
+        <input type="text" id="kondisi" readonly>
+      </div>
 
-      <label for="jumlah">Jumlah Dipinjam</label>
-      <input type="number" id="jumlah" min="1" required />
+      <div class="input-group">
+        <label for="jumlah">Jumlah Dipinjam</label>
+        <input type="number" id="jumlah" min="1" required placeholder="Masukkan jumlah">
+      </div>
 
-      <label for="tglPinjam">Tanggal Pinjam</label>
-      <input type="date" id="tglPinjam" required />
+      <div class="input-group">
+        <label for="tglPinjam">Tanggal Pinjam</label>
+        <input type="date" id="tglPinjam" required>
+      </div>
 
-      <label for="tglKembali">Tanggal Kembali</label>
-      <input type="date" id="tglKembali" required />
+      <div class="input-group">
+        <label for="tglKembali">Tanggal Kembali</label>
+        <input type="date" id="tglKembali" required>
+      </div>
 
-      <button type="submit">Ajukan Peminjaman</button>
+      <div class="form-actions">
+        <a href="dashboard_guru.html" class="btn btn-secondary">Kembali</a>
+        <button type="submit" class="btn btn-primary">Ajukan Peminjaman</button>
+      </div>
     </form>
   </div>
 
