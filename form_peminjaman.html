@@ -8,39 +8,38 @@
 </head>
 <body>
   <div class="container">
-    <h2>Form Pengajuan Peminjaman</h2>
+    <h2>Form Peminjaman Barang</h2>
     <form id="formPeminjaman">
       <label for="namaPeminjam">Nama Peminjam</label>
       <input type="text" id="namaPeminjam" required />
 
-      <label for="idBarang">Pilih ID Barang</label>
-      <select id="idBarang" required>
-        <option value="">-- Pilih --</option>
-      </select>
+      <label for="idBarang">ID Barang</label>
+      <input type="text" id="idBarang" required autocomplete="off" />
 
-      <div id="detailBarang" style="margin-top: 10px;">
+      <div id="detailBarang" style="margin-top: 10px; padding: 10px; border: 1px solid #ccc;">
         <p><strong>Nama Barang:</strong> <span id="namaBarang"></span></p>
         <p><strong>Merk/Tipe:</strong> <span id="merkTipe"></span></p>
         <p><strong>Spesifikasi:</strong> <span id="spesifikasi"></span></p>
         <p><strong>Serial Number:</strong> <span id="serialNumber"></span></p>
-        <p><strong>Jumlah Tersedia:</strong> <span id="jumlahBarang"></span></p>
-        <p><strong>Kondisi:</strong> <span id="kondisiBarang"></span></p>
+        <p><strong>Jumlah Tersedia:</strong> <span id="jumlahTersedia"></span></p>
+        <p><strong>Kondisi:</strong> <span id="kondisi"></span></p>
       </div>
 
-      <label for="jumlah">Jumlah Dipinjam</label>
-      <input type="number" id="jumlah" required min="1" />
+      <label for="jumlahPinjam">Jumlah yang Dipinjam</label>
+      <input type="number" id="jumlahPinjam" required min="1" />
 
-      <label for="tanggalPinjam">Tanggal Pinjam</label>
-      <input type="date" id="tanggalPinjam" required />
+      <label for="tglPinjam">Tanggal Pinjam</label>
+      <input type="date" id="tglPinjam" required />
 
-      <label for="tanggalKembali">Tanggal Kembali</label>
-      <input type="date" id="tanggalKembali" required />
+      <label for="tglKembali">Tanggal Kembali</label>
+      <input type="date" id="tglKembali" required />
 
-      <button type="submit">Kirim Pengajuan</button>
-      <p id="messagePengajuan"></p>
+      <button type="submit">Ajukan Peminjaman</button>
+      <p id="msg"></p>
     </form>
 
-    <a href="dashboard_guru.html">← Kembali ke Dashboard</a>
+    <br />
+    <a href="dashboard_guru.html">⬅ Kembali ke Dashboard</a>
   </div>
 
   <script src="js/form_peminjaman.js"></script>
