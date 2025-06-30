@@ -37,7 +37,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 15px 0;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       border-bottom: 1px solid #E5E7EB;
     }
 
@@ -57,11 +57,12 @@
       background-color: var(--danger);
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 8px 16px;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 6px;
       font-weight: 500;
       transition: background-color 0.2s;
+      font-size: 0.9rem;
     }
 
     button.logout:hover {
@@ -73,12 +74,19 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       padding: 25px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
     .card-title {
       font-size: 1.2rem;
-      margin-bottom: 20px;
+      margin: 0;
       color: var(--text);
       font-weight: 600;
     }
@@ -86,7 +94,6 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
       font-size: 0.9rem;
     }
 
@@ -106,21 +113,18 @@
       background-color: #F9FAFB;
     }
 
-    .action-buttons {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 20px;
-    }
-
     .btn-primary {
       background-color: var(--primary);
       color: white;
       text-decoration: none;
-      padding: 12px 24px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-weight: 500;
       transition: background-color 0.2s;
       display: inline-block;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
     }
 
     .btn-primary:hover {
@@ -153,12 +157,11 @@
     </header>
 
     <div class="card">
-      <h2 class="card-title">Daftar Inventaris</h2>
+      <div class="card-header">
+        <h2 class="card-title">Daftar Inventaris</h2>
+        <a href="form_peminjaman.html" class="btn-primary">Ajukan Peminjaman</a>
+      </div>
       <div id="tabelInventaris">Memuat data inventaris...</div>
-    </div>
-
-    <div class="action-buttons">
-      <a href="form_peminjaman.html" class="btn-primary">Ajukan Peminjaman Barang</a>
     </div>
   </div>
 
