@@ -3,25 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login Sistem Inventaris Sekolah</title>
+  <title>Login - Layanan Laboratorium TKJ SMK Negeri 3 Soppeng</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <div class="login-container">
-    <img src="assets/logosmk.png" alt="Logo SMK" class="logo" />
-    <h2>Login Sistem Inventaris</h2>
+    <img src="assets/logosmk.png" alt="Logo SMK Negeri 3 Soppeng" class="logo" />
+    <div class="header">
+      <h1>Selamat Datang di Layanan Laboratorium TKJ</h1>
+      <p>SMK Negeri 3 Soppeng</p>
+    </div>
     <form id="loginForm">
       <div class="input-group">
         <label for="username">Username</label>
-        <input type="text" id="username" required autocomplete="off" />
+        <input type="text" id="username" required autocomplete="off" placeholder="Masukkan username" />
       </div>
       <div class="input-group">
         <label for="password">Password</label>
-        <input type="password" id="password" required autocomplete="off" />
+        <input type="password" id="password" required autocomplete="off" placeholder="Masukkan password" />
       </div>
-      <button type="submit">Masuk</button>
+      <button type="submit">Masuk ke Sistem</button>
       <p id="message"></p>
     </form>
+      <!-- Tambahkan sebelum </div> penutup login-container -->
+  <div class="footer">
+    <p>Dikembangkan oleh <a href="#" title="Idrus Mudeng">IdrusMudeng</a></p>
+  </div>
+</div>
   </div>
 
   <script src="js/login.js"></script>
