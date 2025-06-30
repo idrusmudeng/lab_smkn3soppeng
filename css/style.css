@@ -160,3 +160,26 @@ button:active {
     font-size: 1.25rem;
   }
 }
+/* Tambahkan di bagian bawah file css/style.css */
+.footer {
+  margin-top: 2rem;
+  color: var(--text-light);
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.footer:hover {
+  opacity: 1;
+}
+
+.footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
