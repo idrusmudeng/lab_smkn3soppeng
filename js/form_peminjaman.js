@@ -59,7 +59,7 @@ function ajukanPeminjaman(e) {
   const serial = document.getElementById("serialNumber").value;
   const jumlahTersedia = document.getElementById("jumlahTersedia").value;
   const kondisi = document.getElementById("kondisi").value;
-  const jumlah = document.getElementById("jumlah").value;
+  const jumlahDipinjam = document.getElementById("jumlah").value;
   const tglPinjam = document.getElementById("tglPinjam").value;
   const tglKembali = document.getElementById("tglKembali").value;
   const tglPengajuan = new Date().toISOString().slice(0, 10);
@@ -79,7 +79,7 @@ function ajukanPeminjaman(e) {
     SPESIFIKASI: spek,
     SERIAL_NUMBER: serial,
     JUMLAH_TERSEDIA: jumlahTersedia,
-    JUMLAH_DIPINJAM: jumlah,
+    JUMLAH_DIPINJAM: jumlahDipinjam,
     KONDISI: kondisi,
     tanggal_pinjam: tglPinjam,
     tanggal_kembali: tglKembali
