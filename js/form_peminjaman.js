@@ -5,17 +5,37 @@ let inventarisList = [];
 
 // Ambil data inventaris saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
-  fetch(scriptURL + "?action=getInventarisList")
+  fetch(scriptURL + "?action=viewInventaris")
     .then((res) => res.json())
     .then((data) => {
-      inventarisList = data;
+      // Simpan semua data kecuali header
+      inventarisList = data.slice(1);
+
+      const header = data[0];
+      const idIndex = header.indexOf("ID_BARANG");
+      const namaIndex = header.indexOf("NAMA_BARANG");
+      const merkIndex = header.indexOf("MERK_TIPE");
+      const spekIndex = header.indexOf("SPESIFIKASI");
+      const serialIndex = header.indexOf("SERIAL_NUMBER");
+      const jumlahIndex = header.indexOf("JUMLAH");
+      const kondisiIndex = header.indexOf("KONDISI");
+
       const select = document.getElementById("idBarang");
-      data.forEach((item) => {
+      inventarisList.forEach((row) => {
         const option = document.createElement("option");
-        option.value = item.ID_BARANG;
-        option.textContent = `${item.ID_BARANG} - ${item.NAMA_BARANG}`;
+        option.value = row[idIndex];
+        option.textContent = `${row[idIndex]} - ${row[namaIndex]}`;
         select.appendChild(option);
       });
+
+      // Simpan indeks untuk akses cepat saat change
+      select.dataset.idIndex = idIndex;
+      select.dataset.namaIndex = namaIndex;
+      select.dataset.merkIndex = merkIndex;
+      select.dataset.spekIndex = spekIndex;
+      select.dataset.serialIndex = serialIndex;
+      select.dataset.jumlahIndex = jumlahIndex;
+      select.dataset.kondisiIndex = kondisiIndex;
     });
 
   document.getElementById("idBarang").addEventListener("change", tampilkanDetailBarang);
@@ -24,14 +44,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function tampilkanDetailBarang() {
   const id = document.getElementById("idBarang").value;
-  const detail = inventarisList.find((item) => item.ID_BARANG === id);
-  if (detail) {
-    document.getElementById("namaBarang").value = detail.NAMA_BARANG || "";
-    document.getElementById("merkTipe").value = detail.MERK_TIPE || "";
-    document.getElementById("spesifikasi").value = detail.SPESIFIKASI || "";
-    document.getElementById("serialNumber").value = detail.SERIAL_NUMBER || "";
-    document.getElementById("jumlahTersedia").value = detail.JUMLAH || "";
-    document.getElementById("kondisi").value = detail.KONDISI || "";
+  const select = document.getElementById("idBarang");
+
+  const idIndex = +select.dataset.idIndex;
+  const namaIndex = +select.dataset.namaIndex;
+  const merkIndex = +select.dataset.merkIndex;
+  const spekIndex = +select.dataset.spekIndex;
+  const serialIndex = +select.dataset.serialIndex;
+  const jumlahIndex = +select.dataset.jumlahIndex;
+  const kondisiIndex = +select.dataset.kondisiIndex;
+
+  const row = inventarisList.find((r) => r[idIndex] === id);
+  if (row) {
+    document.getElementById("namaBarang").value = row[namaIndex] || "";
+    document.getElementById("merkTipe").value = row[merkIndex] || "";
+    document.getElementById("spesifikasi").value = row[spekIndex] || "";
+    document.getElementById("serialNumber").value = row[serialIndex] || "";
+    document.getElementById("jumlahTersedia").value = row[jumlahIndex] || "";
+    document.getElementById("kondisi").value = row[kondisiIndex] || "";
   }
 }
 
@@ -70,6 +100,7 @@ function ajukanPeminjaman(e) {
       alert(res.message);
       if (res.status === "success") {
         document.getElementById("formPengajuan").reset();
+        tampilkanDetailBarang(); // Kosongkan detail
       }
     })
     .catch(() => alert("Gagal menghubungi server."));
