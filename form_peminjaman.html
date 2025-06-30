@@ -1,35 +1,83 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Peminjaman Barang</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Form Peminjaman</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .info {
+      font-size: 14px;
+      background-color: #f0f0f0;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #28a745;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #message {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Form Pengajuan Peminjaman Barang</h2>
-    <form id="formPengajuan">
-      <label>Nama Peminjam</label>
-      <input type="text" id="namaPeminjam" required autocomplete="off">
+  <h2>Form Pengajuan Peminjaman Barang</h2>
+  <form id="formPengajuan">
+    <label for="namaPeminjam">Nama Peminjam</label>
+    <input type="text" id="namaPeminjam" required autocomplete="off" />
 
-      <label>Nama Barang</label>
-      <input type="text" id="namaBarang" required autocomplete="off">
+    <label for="idBarang">ID Barang</label>
+    <select id="idBarang" required></select>
 
-      <label>Jumlah</label>
-      <input type="number" id="jumlah" min="1" required>
+    <div id="detailBarang" class="info"></div>
 
-      <label>Tanggal Pinjam</label>
-      <input type="date" id="tglPinjam" required>
+    <label for="jumlah">Jumlah yang Dipinjam</label>
+    <input type="number" id="jumlah" min="1" required />
 
-      <label>Tanggal Kembali</label>
-      <input type="date" id="tglKembali" required>
+    <label for="tglPinjam">Tanggal Pinjam</label>
+    <input type="date" id="tglPinjam" required />
 
-      <button type="submit">Ajukan</button>
-    </form>
-    <p id="messagePengajuan"></p>
-    <a href="dashboard_guru.html">← Kembali ke Dashboard</a>
-  </div>
+    <label for="tglKembali">Tanggal Kembali</label>
+    <input type="date" id="tglKembali" required />
+
+    <button type="submit">Ajukan Peminjaman</button>
+    <p id="message"></p>
+  </form>
 
   <script src="js/form_peminjaman.js"></script>
 </body>
