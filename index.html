@@ -2,71 +2,24 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login Inventaris</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .login-container {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ccc;
-      width: 320px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background-color: #28a745;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    #message {
-      margin-top: 15px;
-      color: red;
-      text-align: center;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Sistem Inventaris Sekolah</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="login-container">
+    <img src="assets/logosmk.png" alt="Logo SMK" class="logo" />
     <h2>Login Sistem Inventaris</h2>
     <form id="loginForm">
-      <label for="username">Username</label>
-      <input type="text" id="username" required autocomplete="off" />
-      <label for="password">Password</label>
-      <input type="password" id="password" required autocomplete="off" />
-      <button type="submit">Login</button>
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required autocomplete="off" />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required autocomplete="off" />
+      </div>
+      <button type="submit">Masuk</button>
       <p id="message"></p>
     </form>
   </div>
