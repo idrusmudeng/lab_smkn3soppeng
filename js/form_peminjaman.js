@@ -70,20 +70,21 @@ function ajukanPeminjaman(e) {
   }
 
   const params = new URLSearchParams({
-    action: "ajukanPeminjaman",
-    tanggal_pengajuan: tglPengajuan,
-    nama_peminjam: nama,
-    ID_BARANG: idBarang,
-    NAMA_BARANG: namaBarang,
-    MERK_TIPE: merk,
-    SPESIFIKASI: spek,
-    SERIAL_NUMBER: serial,
-    JUMLAH_TERSEDIA: jumlahTersedia,
-    JUMLAH_DIPINJAM: jumlahDipinjam,
-    KONDISI: kondisi,
-    tanggal_pinjam: tglPinjam,
-    tanggal_kembali: tglKembali
-  });
+  action: "ajukanPeminjaman",
+  tanggal_pengajuan: tglPengajuan,
+  nama_peminjam: nama,
+  ID_BARANG: idBarang,
+  nama_barang: namaBarang,         // pastikan ini sesuai
+  MERK_TIPE: merk,
+  SPESIFIKASI: spek,
+  SERIAL_NUMBER: serial,
+  jumlah_tersedia: jumlahTersedia, // pastikan ini sesuai
+  jumlah: jumlah,                  // ini untuk JUMLAH_DIPINJAM
+  KONDISI: kondisi,
+  tanggal_pinjam: tglPinjam,
+  tanggal_kembali: tglKembali,
+});
+
 
   fetch(scriptURL + "?" + params.toString())
     .then(res => res.json())
