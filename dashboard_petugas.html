@@ -1,10 +1,36 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Petugas</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .actions button {
+      margin-right: 5px;
+    }
+    .notif {
+      background-color: #ef4444;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      margin-left: 5px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -14,11 +40,18 @@
     </header>
 
     <section>
-      <h2>Daftar Pengajuan Peminjaman</h2>
-      <div id="tabelPengajuan"></div>
+      <h2>Daftar Inventaris</h2>
+      <div id="notifPeminjaman" style="margin-bottom:10px;"></div>
+      <div id="tabelInventaris"></div>
+    </section>
+
+    <section style="margin-top: 20px;">
+      <a href="approval.html">
+        <button id="btnApproval">Halaman Approval <span id="notifCount"></span></button>
+      </a>
     </section>
   </div>
 
-  <script src="js/petugas.js"></script>
+  <script src="js/dashboard_petugas.js"></script>
 </body>
 </html>
