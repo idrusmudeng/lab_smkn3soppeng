@@ -3,15 +3,16 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJ
 
 let inventarisList = [];
 
-// Ambil data inventaris saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
   fetch(scriptURL + "?action=viewInventaris")
-    .then((res) => res.json())
-    .then((data) => {
-      // Simpan semua data kecuali header
-      inventarisList = data.slice(1);
+    .then(res => res.json())
+    .then(data => {
+      if (!data || data.length < 2) return;
 
       const header = data[0];
+      const rows = data.slice(1);
+      inventarisList = rows;
+
       const idIndex = header.indexOf("ID_BARANG");
       const namaIndex = header.indexOf("NAMA_BARANG");
       const merkIndex = header.indexOf("MERK_TIPE");
@@ -20,48 +21,51 @@ document.addEventListener("DOMContentLoaded", () => {
       const jumlahIndex = header.indexOf("JUMLAH");
       const kondisiIndex = header.indexOf("KONDISI");
 
-      const select = document.getElementById("idBarang");
-      inventarisList.forEach((row) => {
+      const datalist = document.getElementById("idBarangList");
+
+      rows.forEach(row => {
         const option = document.createElement("option");
         option.value = row[idIndex];
-        option.textContent = `${row[idIndex]} - ${row[namaIndex]}`;
-        select.appendChild(option);
+        option.dataset.nama = row[namaIndex];
+        option.dataset.merk = row[merkIndex];
+        option.dataset.spek = row[spekIndex];
+        option.dataset.serial = row[serialIndex];
+        option.dataset.jumlah = row[jumlahIndex];
+        option.dataset.kondisi = row[kondisiIndex];
+        datalist.appendChild(option);
       });
 
-      // Simpan indeks untuk akses cepat saat change
-      select.dataset.idIndex = idIndex;
-      select.dataset.namaIndex = namaIndex;
-      select.dataset.merkIndex = merkIndex;
-      select.dataset.spekIndex = spekIndex;
-      select.dataset.serialIndex = serialIndex;
-      select.dataset.jumlahIndex = jumlahIndex;
-      select.dataset.kondisiIndex = kondisiIndex;
+      // simpan indeks untuk referensi cepat
+      document.getElementById("idBarang").dataset.indexes = JSON.stringify({
+        id: idIndex,
+        nama: namaIndex,
+        merk: merkIndex,
+        spek: spekIndex,
+        serial: serialIndex,
+        jumlah: jumlahIndex,
+        kondisi: kondisiIndex
+      });
     });
 
-  document.getElementById("idBarang").addEventListener("change", tampilkanDetailBarang);
+  document.getElementById("idBarang").addEventListener("input", tampilkanDetailBarang);
   document.getElementById("formPengajuan").addEventListener("submit", ajukanPeminjaman);
 });
 
 function tampilkanDetailBarang() {
-  const id = document.getElementById("idBarang").value;
-  const select = document.getElementById("idBarang");
+  const id = document.getElementById("idBarang").value.trim();
+  const detail = inventarisList.find(row => row[0] === id);
 
-  const idIndex = +select.dataset.idIndex;
-  const namaIndex = +select.dataset.namaIndex;
-  const merkIndex = +select.dataset.merkIndex;
-  const spekIndex = +select.dataset.spekIndex;
-  const serialIndex = +select.dataset.serialIndex;
-  const jumlahIndex = +select.dataset.jumlahIndex;
-  const kondisiIndex = +select.dataset.kondisiIndex;
-
-  const row = inventarisList.find((r) => r[idIndex] === id);
-  if (row) {
-    document.getElementById("namaBarang").value = row[namaIndex] || "";
-    document.getElementById("merkTipe").value = row[merkIndex] || "";
-    document.getElementById("spesifikasi").value = row[spekIndex] || "";
-    document.getElementById("serialNumber").value = row[serialIndex] || "";
-    document.getElementById("jumlahTersedia").value = row[jumlahIndex] || "";
-    document.getElementById("kondisi").value = row[kondisiIndex] || "";
+  if (detail) {
+    document.getElementById("namaBarang").value = detail[1] || "";
+    document.getElementById("merkTipe").value = detail[3] || "";
+    document.getElementById("spesifikasi").value = detail[4] || "";
+    document.getElementById("serialNumber").value = detail[10] || "";
+    document.getElementById("jumlahTersedia").value = detail[5] || "";
+    document.getElementById("kondisi").value = detail[9] || "";
+  } else {
+    // kosongkan kalau tidak ditemukan
+    ["namaBarang", "merkTipe", "spesifikasi", "serialNumber", "jumlahTersedia", "kondisi"]
+      .forEach(id => document.getElementById(id).value = "");
   }
 }
 
@@ -69,16 +73,16 @@ function ajukanPeminjaman(e) {
   e.preventDefault();
 
   const nama = document.getElementById("namaPeminjam").value.trim();
-  const idBarang = document.getElementById("idBarang").value;
-  const namaBarang = document.getElementById("namaBarang").value;
-  const serial = document.getElementById("serialNumber").value;
-  const jumlah = document.getElementById("jumlah").value;
+  const idBarang = document.getElementById("idBarang").value.trim();
+  const namaBarang = document.getElementById("namaBarang").value.trim();
+  const serial = document.getElementById("serialNumber").value.trim();
+  const jumlah = document.getElementById("jumlah").value.trim();
   const tglPinjam = document.getElementById("tglPinjam").value;
   const tglKembali = document.getElementById("tglKembali").value;
   const tglPengajuan = new Date().toISOString().slice(0, 10);
 
   if (!nama || !idBarang || !namaBarang || !jumlah || !tglPinjam || !tglKembali) {
-    alert("Mohon lengkapi semua field.");
+    alert("Semua field wajib diisi.");
     return;
   }
 
@@ -95,12 +99,12 @@ function ajukanPeminjaman(e) {
   });
 
   fetch(scriptURL + "?" + params.toString())
-    .then((res) => res.json())
-    .then((res) => {
+    .then(res => res.json())
+    .then(res => {
       alert(res.message);
       if (res.status === "success") {
         document.getElementById("formPengajuan").reset();
-        tampilkanDetailBarang(); // Kosongkan detail
+        tampilkanDetailBarang(); // kosongkan detail
       }
     })
     .catch(() => alert("Gagal menghubungi server."));
