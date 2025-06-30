@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const jumlahIndex = header.indexOf("JUMLAH");
       const kondisiIndex = header.indexOf("KONDISI");
 
-      const datalist = document.getElementById("idBarangList");
+      const datalist = document.getElementById("ListBarang");
 
       rows.forEach(row => {
         const option = document.createElement("option");
