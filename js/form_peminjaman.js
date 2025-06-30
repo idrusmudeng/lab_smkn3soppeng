@@ -1,40 +1,76 @@
+// js/form_peminjaman.js
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-document.getElementById("formPengajuan").addEventListener("submit", function(e) {
+let inventarisList = [];
+
+// Ambil data inventaris saat halaman dimuat
+document.addEventListener("DOMContentLoaded", () => {
+  fetch(scriptURL + "?action=getInventarisList")
+    .then((res) => res.json())
+    .then((data) => {
+      inventarisList = data;
+      const select = document.getElementById("idBarang");
+      data.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.ID_BARANG;
+        option.textContent = `${item.ID_BARANG} - ${item.NAMA_BARANG}`;
+        select.appendChild(option);
+      });
+    });
+
+  document.getElementById("idBarang").addEventListener("change", tampilkanDetailBarang);
+  document.getElementById("formPengajuan").addEventListener("submit", ajukanPeminjaman);
+});
+
+function tampilkanDetailBarang() {
+  const id = document.getElementById("idBarang").value;
+  const detail = inventarisList.find((item) => item.ID_BARANG === id);
+  if (detail) {
+    document.getElementById("namaBarang").value = detail.NAMA_BARANG || "";
+    document.getElementById("merkTipe").value = detail.MERK_TIPE || "";
+    document.getElementById("spesifikasi").value = detail.SPESIFIKASI || "";
+    document.getElementById("serialNumber").value = detail.SERIAL_NUMBER || "";
+    document.getElementById("jumlahTersedia").value = detail.JUMLAH || "";
+    document.getElementById("kondisi").value = detail.KONDISI || "";
+  }
+}
+
+function ajukanPeminjaman(e) {
   e.preventDefault();
 
-  const namaPeminjam = document.getElementById("namaPeminjam").value;
+  const nama = document.getElementById("namaPeminjam").value.trim();
+  const idBarang = document.getElementById("idBarang").value;
   const namaBarang = document.getElementById("namaBarang").value;
+  const serial = document.getElementById("serialNumber").value;
   const jumlah = document.getElementById("jumlah").value;
-  const tanggalPinjam = document.getElementById("tglPinjam").value;
-  const tanggalKembali = document.getElementById("tglKembali").value;
-  const tanggalPengajuan = new Date().toLocaleDateString("id-ID");
+  const tglPinjam = document.getElementById("tglPinjam").value;
+  const tglKembali = document.getElementById("tglKembali").value;
+  const tglPengajuan = new Date().toISOString().slice(0, 10);
+
+  if (!nama || !idBarang || !namaBarang || !jumlah || !tglPinjam || !tglKembali) {
+    alert("Mohon lengkapi semua field.");
+    return;
+  }
 
   const params = new URLSearchParams({
     action: "ajukanPeminjaman",
-    nama_peminjam: namaPeminjam,
+    tanggal_pengajuan: tglPengajuan,
+    nama_peminjam: nama,
+    ID_BARANG: idBarang,
     nama_barang: namaBarang,
+    SERIAL_NUMBER: serial,
     jumlah: jumlah,
-    tanggal_pinjam: tanggalPinjam,
-    tanggal_kembali: tanggalKembali,
-    tanggal_pengajuan: tanggalPengajuan
+    tanggal_pinjam: tglPinjam,
+    tanggal_kembali: tglKembali,
   });
 
-  fetch(`${scriptURL}?${params}`)
-    .then(res => res.json())
-    .then(response => {
-      const msg = document.getElementById("messagePengajuan");
-      if (response.status === "success") {
-        msg.style.color = "green";
-        msg.textContent = "Pengajuan berhasil dikirim.";
+  fetch(scriptURL + "?" + params.toString())
+    .then((res) => res.json())
+    .then((res) => {
+      alert(res.message);
+      if (res.status === "success") {
         document.getElementById("formPengajuan").reset();
-      } else {
-        msg.style.color = "red";
-        msg.textContent = "Gagal mengajukan: " + response.message;
       }
     })
-    .catch(err => {
-      document.getElementById("messagePengajuan").textContent = "Gagal terhubung ke server.";
-      console.error(err);
-    });
-});
+    .catch(() => alert("Gagal menghubungi server."));
+}
