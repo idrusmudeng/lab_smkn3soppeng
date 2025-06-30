@@ -2,44 +2,209 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Form Peminjaman Barang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Peminjaman Barang - SMKN 3 Soppeng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --danger: #EF4444;
+      --text: #1F2937;
+      --light: #F3F4F6;
+      --white: #FFFFFF;
+      --gray: #9CA3AF;
+      --border: #E5E7EB;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      margin: 30px 20px;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-header h2 {
+      font-size: 1.5rem;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .form-header p {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    #formPeminjaman {
+      display: grid;
+      gap: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input {
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+
+    #detailBarang {
+      background-color: #F9FAFB;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    #detailBarang p {
+      margin: 8px 0;
+      font-size: 0.9rem;
+    }
+
+    #detailBarang strong {
+      font-weight: 500;
+      color: var(--text);
+      display: inline-block;
+      width: 120px;
+    }
+
+    button[type="submit"] {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 10px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: var(--primary-dark);
+    }
+
+    #msg {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 15px;
+      min-height: 20px;
+      color: var(--danger);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 20px;
+      }
+      
+      #detailBarang strong {
+        width: 100px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Form Peminjaman Barang</h2>
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Form Peminjaman Barang</h2>
+      <p>Laboratorium TKJ SMKN 3 Soppeng</p>
+    </div>
+
     <form id="formPeminjaman">
-      <label for="namaPeminjam">Nama Peminjam</label>
-      <input type="text" id="namaPeminjam" required />
-
-      <label for="idBarang">ID Barang</label>
-      <input type="text" id="idBarang" required autocomplete="off" />
-
-      <div id="detailBarang" style="margin-top: 10px; padding: 10px; border: 1px solid #ccc;">
-        <p><strong>Nama Barang:</strong> <span id="namaBarang"></span></p>
-        <p><strong>Merk/Tipe:</strong> <span id="merkTipe"></span></p>
-        <p><strong>Spesifikasi:</strong> <span id="spesifikasi"></span></p>
-        <p><strong>Serial Number:</strong> <span id="serialNumber"></span></p>
-        <p><strong>Jumlah Tersedia:</strong> <span id="jumlahTersedia"></span></p>
-        <p><strong>Kondisi:</strong> <span id="kondisi"></span></p>
+      <div class="input-group">
+        <label for="namaPeminjam">Nama Peminjam</label>
+        <input type="text" id="namaPeminjam" required placeholder="Masukkan nama lengkap">
       </div>
 
-      <label for="jumlahPinjam">Jumlah yang Dipinjam</label>
-      <input type="number" id="jumlahPinjam" required min="1" />
+      <div class="input-group">
+        <label for="idBarang">ID Barang</label>
+        <input type="text" id="idBarang" required autocomplete="off" placeholder="Masukkan ID barang">
+      </div>
 
-      <label for="tglPinjam">Tanggal Pinjam</label>
-      <input type="date" id="tglPinjam" required />
+      <div id="detailBarang">
+        <p><strong>Nama Barang:</strong> <span id="namaBarang">-</span></p>
+        <p><strong>Merk/Tipe:</strong> <span id="merkTipe">-</span></p>
+        <p><strong>Spesifikasi:</strong> <span id="spesifikasi">-</span></p>
+        <p><strong>Serial Number:</strong> <span id="serialNumber">-</span></p>
+        <p><strong>Jumlah Tersedia:</strong> <span id="jumlahTersedia">-</span></p>
+        <p><strong>Kondisi:</strong> <span id="kondisi">-</span></p>
+      </div>
 
-      <label for="tglKembali">Tanggal Kembali</label>
-      <input type="date" id="tglKembali" required />
+      <div class="input-group">
+        <label for="jumlahPinjam">Jumlah yang Dipinjam</label>
+        <input type="number" id="jumlahPinjam" required min="1" placeholder="Masukkan jumlah">
+      </div>
+
+      <div class="input-group">
+        <label for="tglPinjam">Tanggal Pinjam</label>
+        <input type="date" id="tglPinjam" required>
+      </div>
+
+      <div class="input-group">
+        <label for="tglKembali">Tanggal Kembali</label>
+        <input type="date" id="tglKembali" required>
+      </div>
 
       <button type="submit">Ajukan Peminjaman</button>
       <p id="msg"></p>
     </form>
 
-    <br />
-    <a href="dashboard_guru.html">⬅ Kembali ke Dashboard</a>
+    <a href="dashboard_guru.html" class="back-link">← Kembali ke Dashboard</a>
   </div>
 
   <script src="js/form_peminjaman.js"></script>
