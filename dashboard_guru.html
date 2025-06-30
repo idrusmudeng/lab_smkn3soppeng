@@ -5,25 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard Guru</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    button.logout {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button.logout:hover {
+      background-color: #c9302c;
+    }
+    .btn-link {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #0275d8;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    .btn-link:hover {
+      background-color: #025aa5;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Dashboard Guru</h1>
-      <button id="logoutBtn">Logout</button>
+      <button class="logout" id="logoutBtn">Logout</button>
     </header>
 
     <section>
       <h2>Daftar Inventaris</h2>
-      <div id="tabelInventaris"></div>
+      <div id="tabelInventaris">Memuat data...</div>
     </section>
 
-  <section>
-  <a href="form_peminjaman.html">
-    <button>Ajukan Peminjaman Barang</button>
-  </a>
-</section>
-
+    <section>
+      <a href="form_peminjaman.html" class="btn-link">Ajukan Peminjaman Barang</a>
+    </section>
   </div>
 
   <script src="js/guru.js"></script>
