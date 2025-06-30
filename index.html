@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Layanan Laboratorium TKJ SMK Negeri 3 Soppeng</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Lab TKJ - SMKN 3 Soppeng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="login-container">
-    <img src="assets/logosmk.png" alt="Logo SMK Negeri 3 Soppeng" class="logo" />
+    <img src="assets/logosmk.png" alt="SMKN 3 Soppeng" class="logo">
+    
     <div class="header">
       <h1>Selamat Datang di Layanan Laboratorium TKJ</h1>
       <p>SMK Negeri 3 Soppeng</p>
     </div>
+    
     <form id="loginForm">
       <div class="input-group">
         <label for="username">Username</label>
-        <input type="text" id="username" required autocomplete="off" placeholder="Masukkan username" />
+        <input type="text" id="username" required placeholder="Masukkan username">
       </div>
+      
       <div class="input-group">
         <label for="password">Password</label>
-        <input type="password" id="password" required autocomplete="off" placeholder="Masukkan password" />
+        <input type="password" id="password" required placeholder="Masukkan password">
       </div>
-      <button type="submit">Masuk ke Sistem</button>
+      
+      <button type="submit">MASUK</button>
       <p id="message"></p>
     </form>
-    <div class="footer">
-      <p>Dikembangkan oleh <a href="#" title="Idrus Mudeng">IdrusMudeng</a></p>
+    
+    <div class="credit">
+      Dikembangkan oleh <a href="#" title="Idrus Mudeng">IdrusMudeng</a>
     </div>
   </div>
 
