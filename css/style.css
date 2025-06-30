@@ -134,6 +134,30 @@ button:active {
   min-height: 1.25rem;
 }
 
+.footer {
+  margin-top: 2rem;
+  color: var(--text-light);
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  animation: fadeIn 0.8s ease-out 0.4s both;
+}
+
+.footer:hover {
+  opacity: 1;
+}
+
+.footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
 /* Animations */
 @keyframes fadeInUp {
   from {
@@ -144,6 +168,11 @@ button:active {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.7; }
 }
 
 .login-container {
@@ -159,27 +188,4 @@ button:active {
   .header h1 {
     font-size: 1.25rem;
   }
-}
-/* Tambahkan di bagian bawah file css/style.css */
-.footer {
-  margin-top: 2rem;
-  color: var(--text-light);
-  font-size: 0.75rem;
-  text-align: center;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-}
-
-.footer:hover {
-  opacity: 1;
-}
-
-.footer a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.footer a:hover {
-  text-decoration: underline;
 }
