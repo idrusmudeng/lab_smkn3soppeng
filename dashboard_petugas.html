@@ -1,87 +1,79 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Petugas</title>
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f9fafb;
-      padding: 20px;
-    }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      background-color: #ffffff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-    .actions button {
-      margin-right: 5px;
-    }
-    .notif {
-      background-color: #ef4444;
-      color: white;
-      padding: 3px 8px;
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      margin-left: 5px;
-    }
-    button {
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: none;
-      background-color: #3b82f6;
-      color: white;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #2563eb;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Dashboard Petugas</h1>
-      <button id="logoutBtn">Logout</button>
-    </header>
+const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
-    <section>
-      <h2>Daftar Inventaris</h2>
-      <div id="notifPeminjaman" style="margin-bottom:10px;"></div>
-      <div id="tabelInventaris">Memuat data...</div>
-    </section>
+const tabelContainer = document.getElementById("tabelInventaris");
+const notifCount = document.getElementById("notifCount");
+const notifBox = document.getElementById("notifPeminjaman");
 
-    <section style="margin-top: 20px;">
-      <a href="approval.html">
-        <button id="btnApproval">Halaman Approval <span id="notifCount"></span></button>
-      </a>
-    </section>
-  </div>
+document.addEventListener("DOMContentLoaded", () => {
+  fetch(scriptURL + "?action=viewInventaris")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("DATA INVENTARIS:", data);
+      renderInventaris(data);
+    })
+    .catch((error) => {
+      tabelContainer.innerHTML = "Gagal memuat data.";
+      console.error("Error fetching inventaris:", error);
+    });
 
-  <script src="js/dashboard_petugas.js"></script>
-</body>
-</html>
+  fetch(scriptURL + "?action=getPengajuan")
+    .then((res) => res.json())
+    .then((data) => {
+      const header = data[0];
+      const statusIndex = header.indexOf("STATUS");
+      const pendingCount = data.slice(1).filter(row => row[statusIndex] === "Menunggu Persetujuan").length;
+      if (pendingCount > 0) {
+        notifBox.innerHTML = `🔔 <strong>${pendingCount}</strong> pengajuan menunggu persetujuan.`;
+        notifCount.innerHTML = `<span class="notif">${pendingCount}</span>`;
+      }
+    });
+
+  const btnLogout = document.getElementById("btnLogout");
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "login.html";
+    });
+  }
+});
+
+function renderInventaris(data) {
+  if (!data || data.length < 2) {
+    tabelContainer.innerHTML = "Data tidak tersedia.";
+    return;
+  }
+
+  const header = data[0];
+  const rows = data.slice(1);
+
+  let html = "<table><thead><tr>";
+  header.forEach(col => html += `<th>${col}</th>`);
+  html += "<th>Aksi</th></tr></thead><tbody>";
+
+  rows.forEach((row, index) => {
+    html += "<tr>";
+    row.forEach(cell => html += `<td>${cell}</td>`);
+    html += `<td class="actions">
+      <button onclick="editRow(${index + 2})">Edit</button>
+      <button onclick="hapusRow(${index + 2})">Hapus</button>
+    </td></tr>`;
+  });
+
+  html += "</tbody></table>";
+  tabelContainer.innerHTML = html;
+}
+
+function editRow(index) {
+  alert("Fitur edit akan dikembangkan.");
+}
+
+function hapusRow(index) {
+  if (confirm("Yakin ingin menghapus data ini?")) {
+    fetch(`${scriptURL}?action=hapusInventaris&row=${index}`)
+      .then(res => res.json())
+      .then(res => {
+        alert(res.message);
+        location.reload();
+      });
+  }
+}
