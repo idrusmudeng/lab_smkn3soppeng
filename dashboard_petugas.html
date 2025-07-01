@@ -2,112 +2,167 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard Petugas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Petugas - SMKN 3 Soppeng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
   <style>
+    :root {
+      --primary: #3B82F6;
+      --primary-dark: #2563EB;
+      --danger: #EF4444;
+      --danger-dark: #DC2626;
+      --text: #1F2937;
+      --light: #F3F4F6;
+      --white: #FFFFFF;
+      --gray: #9CA3AF;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
       margin: 0;
-      padding: 20px;
-      background-color: #f4f6f8;
+      padding: 0;
+      color: var(--text);
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .container {
-      max-width: 1000px;
+    .dashboard-container {
+      max-width: 1200px;
       margin: 0 auto;
+      padding: 20px;
     }
 
-    .notif-area {
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: #fff4e5;
-      border-left: 5px solid #ffa726;
-      border-radius: 5px;
-      color: #444;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #E5E7EB;
     }
 
-    #notifCount .notif {
-      background-color: red;
+    .header-title h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .header-title p {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin: 5px 0 0;
+    }
+
+    button.logout {
+      background-color: var(--danger);
       color: white;
-      border-radius: 50%;
-      padding: 2px 6px;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+
+    button.logout:hover {
+      background-color: var(--danger-dark);
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      margin: 0;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    #notifPeminjaman {
+      background-color: #FFF8E1;
+      color: #92400E;
+      border-left: 5px solid #F59E0B;
+      padding: 10px 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-size: 0.95rem;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      background-color: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-size: 0.9rem;
     }
 
     th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
+      padding: 12px 15px;
       text-align: left;
+      border-bottom: 1px solid #E5E7EB;
     }
 
     th {
-      background-color: #f5f5f5;
-      font-weight: bold;
+      background-color: #F9FAFB;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #F9FAFB;
     }
 
     .actions button {
-      margin-right: 5px;
-      padding: 4px 10px;
-      font-size: 0.9em;
-    }
-
-    #btnLogout {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #e74c3c;
+      background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-right: 5px;
+      font-size: 0.8rem;
       cursor: pointer;
-      float: right;
     }
 
-    #btnLogout:hover {
-      background-color: #c0392b;
+    .actions button:last-child {
+      background-color: var(--danger);
     }
 
-    @media screen and (max-width: 600px) {
-      th, td {
-        font-size: 12px;
-        padding: 6px;
-      }
+    .actions button:hover {
+      opacity: 0.9;
+    }
 
-      #btnLogout {
-        width: 100%;
-        float: none;
-        margin-top: 30px;
-      }
+    #tabelInventaris {
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Dashboard Petugas</h2>
+  <div class="dashboard-container">
+    <header>
+      <div class="header-title">
+        <h1>Dashboard Petugas</h1>
+        <p>Laboratorium TKJ SMKN 3 Soppeng</p>
+      </div>
+      <button class="logout" id="btnLogout">Logout</button>
+    </header>
 
-    <div class="notif-area">
-      <div id="notifPeminjaman">Tidak ada notifikasi saat ini.</div>
-      <div id="notifCount"></div>
+    <div id="notifPeminjaman">Memuat notifikasi...</div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Daftar Inventaris</h2>
+      </div>
+      <div id="tabelInventaris">Memuat data inventaris...</div>
     </div>
-
-    <div id="tabelInventaris">Memuat data inventaris...</div>
-
-    <button id="btnLogout">Logout</button>
   </div>
 
   <script src="js/petugas.js"></script>
