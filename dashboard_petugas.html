@@ -6,6 +6,24 @@
   <title>Dashboard Petugas</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -30,6 +48,18 @@
       font-size: 0.8rem;
       margin-left: 5px;
     }
+    button {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
   </style>
 </head>
 <body>
@@ -42,7 +72,7 @@
     <section>
       <h2>Daftar Inventaris</h2>
       <div id="notifPeminjaman" style="margin-bottom:10px;"></div>
-      <div id="tabelInventaris"></div>
+      <div id="tabelInventaris">Memuat data...</div>
     </section>
 
     <section style="margin-top: 20px;">
