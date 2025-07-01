@@ -107,6 +107,23 @@
       font-weight: 600;
     }
 
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
     #tabelInventaris {
       overflow-x: auto;
     }
@@ -168,6 +185,7 @@
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Daftar Inventaris</h2>
+        <a href="tambah.html" class="btn-primary">+ Tambah Barang</a>
       </div>
       <div id="tabelInventaris">Memuat data inventaris...</div>
     </div>
