@@ -16,6 +16,8 @@
       --light: #F3F4F6;
       --white: #FFFFFF;
       --gray: #9CA3AF;
+      --notif-bg: #FFF8E1;
+      --notif-border: #F59E0B;
     }
 
     body {
@@ -30,6 +32,9 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -37,8 +42,9 @@
       justify-content: space-between;
       align-items: center;
       padding: 15px 0;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       border-bottom: 1px solid #E5E7EB;
+      flex-shrink: 0;
     }
 
     .header-title h1 {
@@ -62,10 +68,35 @@
       font-weight: 500;
       transition: background-color 0.2s;
       font-size: 0.9rem;
+      flex-shrink: 0;
     }
 
     button.logout:hover {
       background-color: var(--danger-dark);
+    }
+
+    #notifPeminjaman {
+      background-color: var(--notif-bg);
+      color: var(--notif-border);
+      border-left: 5px solid var(--notif-border);
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #notifPeminjaman a {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+      margin-left: 15px;
+    }
+    #notifPeminjaman a:hover {
+      color: var(--primary-dark);
     }
 
     .card {
@@ -73,7 +104,9 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       padding: 25px;
-      margin-bottom: 25px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .card-header {
@@ -81,29 +114,26 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .card-title {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin: 0;
       color: var(--text);
       font-weight: 600;
     }
 
-    #notifPeminjaman {
-      background-color: #FFF8E1;
-      color: #92400E;
-      border-left: 5px solid #F59E0B;
-      padding: 10px 15px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-      font-size: 0.95rem;
+    #tabelInventaris {
+      overflow-x: auto;
+      flex-grow: 1;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.9rem;
+      min-width: 900px; /* supaya tabel ga pecah */
     }
 
     th, td {
@@ -128,8 +158,9 @@
       border-radius: 4px;
       padding: 6px 10px;
       margin-right: 5px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
 
     .actions button:last-child {
@@ -140,8 +171,20 @@
       opacity: 0.9;
     }
 
-    #tabelInventaris {
-      overflow-x: auto;
+    @media screen and (max-width: 640px) {
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      #notifPeminjaman {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      table {
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
@@ -166,5 +209,38 @@
   </div>
 
   <script src="js/petugas.js"></script>
+  <script>
+    // Supaya link approval muncul di notif
+    function updateNotifWithLink(count) {
+      const notifDiv = document.getElementById('notifPeminjaman');
+      notifDiv.innerHTML = `
+        🔔 Terdapat <strong>${count}</strong> pengajuan menunggu persetujuan.
+        <a href="approval.html">Lihat halaman persetujuan &raquo;</a>
+      `;
+    }
+
+    // Override notif loader supaya link muncul juga
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch("https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec?action=getPengajuan")
+        .then(res => res.json())
+        .then(data => {
+          const header = data[0];
+          const statusIndex = header.indexOf("STATUS");
+          const pendingCount = data.slice(1).filter(row => row[statusIndex] === "Menunggu Persetujuan").length;
+          if (pendingCount > 0) {
+            updateNotifWithLink(pendingCount);
+          } else {
+            document.getElementById('notifPeminjaman').textContent = "Tidak ada notifikasi saat ini.";
+          }
+        });
+    });
+
+    // Logout button handler
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      // Contoh logout: hapus token/session dan redirect ke login
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = 'login.html';
+    });
+  </script>
 </body>
 </html>
