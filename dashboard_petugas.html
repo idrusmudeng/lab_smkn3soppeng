@@ -26,6 +26,47 @@
       </div>
       <div id="tabelInventaris">Memuat data inventaris...</div>
     </div>
+
+    <!-- Form Edit Pop-up -->
+    <div id="formEdit" class="card" style="display:none; margin-top: 20px;">
+      <div class="card-header">
+        <h3>Edit Data Inventaris</h3>
+      </div>
+      <form id="formEditData" class="form-grid"></form>
+    </div>
+  </div>
+
+  <script src="js/petugas.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Petugas - SMKN 3 Soppeng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <header>
+      <div class="header-title">
+        <h1>Dashboard Petugas</h1>
+        <p>Laboratorium TKJ SMKN 3 Soppeng</p>
+      </div>
+      <button class="logout" id="btnLogout">Logout</button>
+    </header>
+
+    <div id="notifPeminjaman">Memuat notifikasi...</div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Daftar Inventaris</h2>
+        <a href="tambah.html" class="btn-primary">+ Tambah Barang</a>
+      </div>
+      <div id="tabelInventaris">Memuat data inventaris...</div>
+    </div>
   </div>
 
   <script src="js/petugas.js"></script>
