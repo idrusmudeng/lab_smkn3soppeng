@@ -1,82 +1,93 @@
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+const headers = [
+  "ID_BARANG", "NAMA_BARANG", "KATEGORI", "MERK_TIPE", "SPESIFIKASI", "JUMLAH", "SATUAN", "LOKASI",
+  "TAHUN_PEROLEHAN", "KONDISI", "SERIAL_NUMBER", "FOTO", "KETERANGAN", "HARGA", "SUMBER_DANA", "TANGGAL_INVENTARISASI"
+];
 
-const tabelContainer = document.getElementById("tabelInventaris");
-const notifBox = document.getElementById("notifPeminjaman");
-const logoutBtn = document.getElementById("btnLogout");
+document.addEventListener("DOMContentLoaded", loadInventaris);
 
-// Logout handler
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem("isLoggedIn");
-  window.location.href = "login.html";
-});
-
-// Ambil dan tampilkan data inventaris + notifikasi
-document.addEventListener("DOMContentLoaded", () => {
-  // Ambil data inventaris
+function loadInventaris() {
   fetch(scriptURL + "?action=viewInventaris")
-    .then((res) => res.json())
-    .then((data) => {
-      renderInventaris(data);
-    })
+    .then(res => res.json())
+    .then(renderTabel)
     .catch(() => {
-      tabelContainer.innerHTML = "Gagal memuat data.";
+      document.getElementById("tabelInventaris").innerHTML = "Gagal memuat data.";
     });
+}
 
-  // Ambil notifikasi pengajuan
-  fetch(scriptURL + "?action=getPengajuan")
-    .then((res) => res.json())
-    .then((data) => {
-      const header = data[0];
-      const statusIndex = header.indexOf("STATUS");
-      const pendingCount = data.slice(1).filter(row => row[statusIndex] === "Menunggu Persetujuan").length;
-      if (pendingCount > 0) {
-        notifBox.innerHTML = `🔔 Terdapat <strong>${pendingCount}</strong> pengajuan menunggu persetujuan. <a href="approval.html">Lihat persetujuan &raquo;</a>`;
-      } else {
-        notifBox.textContent = "Tidak ada notifikasi saat ini.";
-      }
-    })
-    .catch(() => {
-      notifBox.textContent = "Gagal memuat notifikasi.";
-    });
-});
+function renderTabel(data) {
+  const rows = data.slice(1); // tanpa header
+  let html = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Aksi</th></tr></thead><tbody>`;
 
-function renderInventaris(data) {
-  if (!data || data.length < 2) {
-    tabelContainer.innerHTML = "Data tidak tersedia.";
-    return;
-  }
-
-  const header = data[0];
-  const rows = data.slice(1);
-
-  let html = "<table><thead><tr>";
-  header.forEach(col => html += `<th>${col}</th>`);
-  html += "<th>Aksi</th></tr></thead><tbody>";
-
-  rows.forEach((row, index) => {
-    html += "<tr>";
-    row.forEach(cell => html += `<td>${cell}</td>`);
-    html += `<td class='actions'>
-      <button onclick="editRow(${index + 1})">Edit</button>
-      <button onclick="hapusRow(${index + 1})">Hapus</button>
-    </td></tr>`;
+  rows.forEach((row, i) => {
+    html += `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}
+      <td>
+        <button onclick='editData(${i + 1}, ${JSON.stringify(row).replace(/'/g, "&apos;")})'>Edit</button>
+        <button onclick='hapusData(${i + 1})'>Hapus</button>
+      </td>
+    </tr>`;
   });
 
   html += "</tbody></table>";
-  tabelContainer.innerHTML = html;
+  document.getElementById("tabelInventaris").innerHTML = html;
 }
 
-function editRow(index) {
-  alert("Fitur edit belum tersedia.");
-}
+document.getElementById("formTambah").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  formData.append("action", "tambahInventaris");
 
-function hapusRow(index) {
+  fetch(scriptURL, { method: "POST", body: formData })
+    .then(res => res.json())
+    .then(res => {
+      alert(res.message);
+      this.reset();
+      loadInventaris();
+    });
+});
+
+function hapusData(index) {
   if (confirm("Yakin ingin menghapus data ini?")) {
-    fetch(scriptURL + "?action=hapusInventaris&row=" + index)
-      .then((res) => res.json())
-      .then((res) => {
+    fetch(`${scriptURL}?action=hapusInventaris&row=${index}`)
+      .then(res => res.json())
+      .then(res => {
         alert(res.message);
-        location.reload();
+        loadInventaris();
       });
   }
+}
+
+function editData(index, row) {
+  const form = document.getElementById("formEditData");
+  form.innerHTML = `<input type="hidden" name="row" value="${index}">`;
+
+  headers.forEach((h, i) => {
+    const val = row[i] || "";
+    form.innerHTML += `<input name="${h}" value="${val}" placeholder="${h}" required>`;
+  });
+
+  form.innerHTML += `
+    <button type="submit">Simpan</button>
+    <button type="button" onclick="batalEdit()">Batal</button>
+  `;
+
+  document.getElementById("formEdit").style.display = "block";
+
+  form.onsubmit = function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    formData.append("action", "updateInventaris");
+
+    fetch(scriptURL, { method: "POST", body: formData })
+      .then(res => res.json())
+      .then(res => {
+        alert(res.message);
+        document.getElementById("formEdit").style.display = "none";
+        loadInventaris();
+      });
+  };
+}
+
+function batalEdit() {
+  document.getElementById("formEdit").style.display = "none";
 }
