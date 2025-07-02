@@ -9,19 +9,17 @@ const tabelContainer = document.getElementById("tabelInventaris");
 const notifBox = document.getElementById("notifPeminjaman");
 const logoutBtn = document.getElementById("btnLogout");
 
-// === LOGOUT ===
+// Logout handler
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("isLoggedIn");
   window.location.href = "login.html";
 });
 
-// === LOAD DATA SAAT PERTAMA ===
 document.addEventListener("DOMContentLoaded", () => {
   loadInventaris();
   loadNotifikasi();
 });
 
-// === AMBIL DAN TAMPILKAN DATA INVENTARIS ===
 function loadInventaris() {
   fetch(scriptURL + "?action=viewInventaris")
     .then(res => res.json())
@@ -32,21 +30,23 @@ function loadInventaris() {
 }
 
 function renderTabel(data) {
-  tabelContainer.innerHTML = ""; // Hapus isi lama untuk mencegah dobel
+  tabelContainer.innerHTML = ""; // clear dulu agar tidak dobel
 
   if (!data || data.length < 2) {
     tabelContainer.innerHTML = "Data tidak tersedia.";
     return;
   }
 
-  const rows = data.slice(1); // skip header
+  const rows = data.slice(1); // data tanpa header
+
   let html = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}<th>Aksi</th></tr></thead><tbody>`;
 
   rows.forEach((row, i) => {
+    const sheetRow = i + 2; // baris sheet = index + 2 (karena baris 1 header)
     html += `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}
       <td>
-        <button onclick='editData(${i + 1}, ${JSON.stringify(row).replace(/'/g, "&apos;")})'>Edit</button>
-        <button onclick='hapusData(${i + 1})'>Hapus</button>
+        <button onclick='editData(${sheetRow}, ${JSON.stringify(row).replace(/'/g, "&apos;")})'>Edit</button>
+        <button onclick='hapusData(${sheetRow})'>Hapus</button>
       </td>
     </tr>`;
   });
@@ -55,7 +55,6 @@ function renderTabel(data) {
   tabelContainer.innerHTML = html;
 }
 
-// === TAMPILKAN NOTIFIKASI PENGAJUAN ===
 function loadNotifikasi() {
   fetch(scriptURL + "?action=getPengajuan")
     .then(res => res.json())
@@ -72,10 +71,9 @@ function loadNotifikasi() {
     });
 }
 
-// === HAPUS DATA ===
-function hapusData(index) {
+function hapusData(sheetRow) {
   if (confirm("Yakin ingin menghapus data ini?")) {
-    fetch(`${scriptURL}?action=hapusInventaris&row=${index}`)
+    fetch(`${scriptURL}?action=hapusInventaris&row=${sheetRow}`)
       .then(res => res.json())
       .then(res => {
         alert(res.message);
@@ -84,12 +82,11 @@ function hapusData(index) {
   }
 }
 
-// === EDIT DATA ===
-function editData(index, row) {
+function editData(sheetRow, row) {
   const form = document.getElementById("formEditData");
   const formContainer = document.getElementById("formEdit");
 
-  form.innerHTML = `<input type="hidden" name="row" value="${index}">`;
+  form.innerHTML = `<input type="hidden" name="row" value="${sheetRow}">`;
 
   headers.forEach((h, i) => {
     const val = row[i] || "";
