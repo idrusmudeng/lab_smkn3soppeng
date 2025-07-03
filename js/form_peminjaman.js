@@ -1,9 +1,7 @@
-// js/form_peminjaman.js
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
 let inventarisList = [];
 
-// Ambil data inventaris saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
   fetch(scriptURL + "?action=viewInventaris")
     .then((res) => res.json())
@@ -85,7 +83,7 @@ function ajukanPeminjaman(e) {
     SPESIFIKASI: spesifikasi,
     SERIAL_NUMBER: serial,
     jumlah_tersedia: jumlahTersedia,
-    jumlah: jumlah,
+    jumlah_dipinjam: jumlah,
     KONDISI: kondisi,
     tanggal_pinjam: tglPinjam,
     tanggal_kembali: tglKembali,
