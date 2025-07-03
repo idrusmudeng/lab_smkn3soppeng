@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         html += "<tr>";
         row.forEach(cell => html += `<td>${cell}</td>`);
 
-        if (row[6] === "Menunggu Persetujuan") {
+        if (row[12] === "Menunggu Persetujuan") {
           html += `<td>
             <button onclick="setujui(${i + 1})">Setujui</button>
             <button onclick="tolak(${i + 1})">Tolak</button>
