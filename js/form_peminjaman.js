@@ -89,7 +89,10 @@ function ajukanPeminjaman(e) {
     tanggal_kembali: tglKembali,
   });
 
-  fetch(scriptURL + "?" + params.toString())
+  fetch(scriptURL, {
+  method: "POST",
+  body: new URLSearchParams(data),
+})
     .then((res) => res.json())
     .then((res) => {
       alert(res.message);
