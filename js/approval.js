@@ -1,71 +1,119 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+// === approval.js (Versi Terbaru dengan Pengembalian) ===
 
-document.addEventListener("DOMContentLoaded", () => {
-  fetch(scriptURL + "?action=getPengajuan")
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById("tabelPengajuan");
-      if (!data || data.length <= 1) {
-        container.innerHTML = "Tidak ada pengajuan.";
-        return;
-      }
-
-      let html = "<table border='1'><thead><tr>";
-      const headers = data[0].concat("Tindakan");
-      headers.forEach(h => html += `<th>${h}</th>`);
-      html += "</tr></thead><tbody>";
-
-      for (let i = 1; i < data.length; i++) {
-        const row = data[i];
-        html += "<tr>";
-        row.forEach(cell => html += `<td>${cell}</td>`);
-
-        if (row[12] === "Menunggu Persetujuan") {
-          html += `<td>
-            <button onclick="setujui(${i + 1})" class="btn-primary">Setujui</button>
-            <button onclick="tolak(${i + 1})" style="background-color: #EF4444; color: white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Tolak</button>
-          </td>`;
-        } else {
-          html += "<td>-</td>";
-        }
-
-        html += "</tr>";
-      }
-
-      html += "</tbody></table>";
-      container.innerHTML = html;
-    });
+document.addEventListener("DOMContentLoaded", function () {
+  fetchDataPengajuan();
 });
 
-function setujui(row) {
-  updateStatus(row, "Disetujui");
+function fetchDataPengajuan() {
+  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=getPengajuan")
+    .then((res) => res.json())
+    .then((data) => renderTabelPengajuan(data))
+    .catch((err) => console.error("Gagal mengambil data:", err));
 }
 
-function tolak(row) {
-  updateStatus(row, "Ditolak");
-}
+function renderTabelPengajuan(data) {
+  const container = document.getElementById("tabelPengajuan");
+  container.innerHTML = "";
 
-function updateStatus(row, status) {
-  const keterangan = (status === "Disetujui") ? "Disetujui oleh petugas" : "Ditolak oleh petugas";
+  const table = document.createElement("table");
+  const header = data[0];
+  const rows = data.slice(1);
 
-  const formData = new URLSearchParams({
-    action: "updateStatus",
-    row: row,
-    status: status,
-    keterangan: keterangan,
+  const thead = document.createElement("thead");
+  const trHead = document.createElement("tr");
+  header.forEach((head) => {
+    const th = document.createElement("th");
+    th.textContent = head;
+    trHead.appendChild(th);
+  });
+  trHead.innerHTML += "<th>Aksi</th>";
+  thead.appendChild(trHead);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+
+  rows.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    row.forEach((cell) => {
+      const td = document.createElement("td");
+      td.textContent = cell;
+      tr.appendChild(td);
+    });
+
+    const aksiCell = document.createElement("td");
+
+    if (row[12] === "Menunggu Persetujuan") {
+      const setujuiBtn = document.createElement("button");
+      setujuiBtn.textContent = "Setujui";
+      setujuiBtn.className = "btn-primary";
+      setujuiBtn.onclick = () => prosesPersetujuan(i + 2, "Disetujui");
+
+      const tolakBtn = document.createElement("button");
+      tolakBtn.textContent = "Tolak";
+      tolakBtn.className = "logout";
+      tolakBtn.onclick = () => prosesPersetujuan(i + 2, "Ditolak");
+
+      aksiCell.appendChild(setujuiBtn);
+      aksiCell.appendChild(tolakBtn);
+    } else if (row[12] === "Disetujui") {
+      const kembaliBtn = document.createElement("button");
+      kembaliBtn.textContent = "Proses Pengembalian";
+      kembaliBtn.className = "btn-primary";
+      kembaliBtn.onclick = () => tampilkanFormPengembalian(i + 2);
+      aksiCell.appendChild(kembaliBtn);
+    } else {
+      aksiCell.textContent = "-";
+    }
+
+    tr.appendChild(aksiCell);
+    tbody.appendChild(tr);
   });
 
-  fetch(scriptURL, {
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function prosesPersetujuan(rowIndex, status) {
+  const keterangan = prompt("Masukkan keterangan:", "");
+  if (keterangan === null) return;
+
+  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
     method: "POST",
-    body: formData,
+    body: new URLSearchParams({
+      action: "updateStatus",
+      row: rowIndex,
+      status: status,
+      keterangan: keterangan,
+    }),
   })
-    .then(res => res.json())
-    .then(data => {
-      alert(data.message);
-      location.reload();
+    .then((res) => res.json())
+    .then((res) => {
+      alert(res.message);
+      fetchDataPengajuan();
     })
-    .catch(err => {
-      alert("Gagal mengupdate status.");
-      console.error(err);
-    });
+    .catch((err) => alert("Terjadi kesalahan: " + err.message));
+}
+
+function tampilkanFormPengembalian(rowIndex) {
+  const jumlah = prompt("Jumlah yang dikembalikan:", "1");
+  if (!jumlah || isNaN(jumlah)) return alert("Masukkan angka yang valid.");
+
+  const kondisi = prompt("Kondisi saat dikembalikan (Baik/Rusak Ringan/Rusak Berat):", "Baik");
+  if (!kondisi) return alert("Kondisi wajib diisi.");
+
+  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "prosesPengembalian",
+      row: rowIndex,
+      jumlah_dikembalikan: jumlah,
+      kondisi: kondisi,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      alert(res.message);
+      fetchDataPengajuan();
+    })
+    .catch((err) => alert("Gagal memproses pengembalian: " + err.message));
 }
