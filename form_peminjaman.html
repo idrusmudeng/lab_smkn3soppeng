@@ -135,7 +135,7 @@
     }
 
     #listBarang {
-      display: none; /* datalist default native, bisa disembunyikan */
+      display: none;
     }
 
     @media (max-width: 480px) {
@@ -179,35 +179,12 @@
         <datalist id="listBarang"></datalist>
       </div>
 
-      <div class="input-group">
-        <label for="namaBarang">Nama Barang</label>
-        <input type="text" id="namaBarang" name="namaBarang" readonly />
-      </div>
-
-      <div class="input-group">
-        <label for="merkTipe">Merk/Tipe</label>
-        <input type="text" id="merkTipe" name="merkTipe" readonly />
-      </div>
-
-      <div class="input-group">
-        <label for="spesifikasi">Spesifikasi</label>
-        <input type="text" id="spesifikasi" name="spesifikasi" readonly />
-      </div>
-
-      <div class="input-group">
-        <label for="serialNumber">Serial Number</label>
-        <input type="text" id="serialNumber" name="serialNumber" readonly />
-      </div>
-
-      <div class="input-group">
-        <label for="jumlahTersedia">Jumlah Tersedia</label>
-        <input type="text" id="jumlahTersedia" name="jumlahTersedia" readonly />
-      </div>
-
-      <div class="input-group">
-        <label for="kondisi">Kondisi</label>
-        <input type="text" id="kondisi" name="kondisi" readonly />
-      </div>
+      <div class="input-group"><label for="namaBarang">Nama Barang</label><input type="text" id="namaBarang" readonly /></div>
+      <div class="input-group"><label for="merkTipe">Merk/Tipe</label><input type="text" id="merkTipe" readonly /></div>
+      <div class="input-group"><label for="spesifikasi">Spesifikasi</label><input type="text" id="spesifikasi" readonly /></div>
+      <div class="input-group"><label for="serialNumber">Serial Number</label><input type="text" id="serialNumber" readonly /></div>
+      <div class="input-group"><label for="jumlahTersedia">Jumlah Tersedia</label><input type="text" id="jumlahTersedia" readonly /></div>
+      <div class="input-group"><label for="kondisi">Kondisi</label><input type="text" id="kondisi" readonly /></div>
 
       <div class="input-group">
         <label for="jumlah">Jumlah Dipinjam</label>
@@ -225,7 +202,7 @@
       </div>
 
       <div class="form-actions">
-        <a href="dashboard_guru.html" class="btn btn-secondary" role="button" tabindex="0">Kembali</a>
+        <a href="dashboard_guru.html" class="btn btn-secondary">Kembali</a>
         <button type="submit" class="btn btn-primary">Ajukan Peminjaman</button>
       </div>
     </form>
