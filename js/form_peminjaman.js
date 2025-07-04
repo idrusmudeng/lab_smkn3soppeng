@@ -89,8 +89,6 @@ function ajukanPeminjaman(e) {
     tanggal_kembali: tglKembali,
   });
 
-  fetch(scriptURL, {
-  method: "POST",
 fetch(scriptURL, {
     method: "POST",
     body: params,
