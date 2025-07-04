@@ -61,20 +61,27 @@ function ajukanPeminjaman(e) {
   const merkTipe = document.getElementById("merkTipe").value;
   const spesifikasi = document.getElementById("spesifikasi").value;
   const serial = document.getElementById("serialNumber").value;
-  const jumlahTersedia = parseInt(document.getElementById("jumlahTersedia").value);
-  const jumlah = parseInt(document.getElementById("jumlah").value);
+  const jumlahTersedia = parseInt(document.getElementById("jumlahTersedia").value || "0");
   const kondisi = document.getElementById("kondisi").value;
+  const jumlah = parseInt(document.getElementById("jumlah").value || "0");
   const tglPinjam = document.getElementById("tglPinjam").value;
   const tglKembali = document.getElementById("tglKembali").value;
   const tglPengajuan = new Date().toISOString().slice(0, 10);
 
+  // Validasi umum
   if (!nama || !idBarang || !namaBarang || !jumlah || !tglPinjam || !tglKembali) {
     alert("Mohon lengkapi semua field.");
     return;
   }
 
+  // Validasi stok
+  if (jumlahTersedia <= 0) {
+    alert("Stok barang kosong. Tidak bisa dipinjam.");
+    return;
+  }
+
   if (jumlah > jumlahTersedia) {
-    alert("Jumlah yang dipinjam melebihi stok tersedia.");
+    alert(`Jumlah dipinjam melebihi stok tersedia (${jumlahTersedia}).`);
     return;
   }
 
