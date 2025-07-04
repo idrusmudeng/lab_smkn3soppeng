@@ -91,8 +91,10 @@ function ajukanPeminjaman(e) {
 
   fetch(scriptURL, {
   method: "POST",
-  body: new URLSearchParams(data),
-})
+fetch(scriptURL, {
+    method: "POST",
+    body: params,
+  })
     .then((res) => res.json())
     .then((res) => {
       alert(res.message);
