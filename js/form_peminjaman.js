@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       const header = data[0];
       const body = data.slice(1);
-      
+
       const idIndex = header.indexOf("ID_BARANG");
       const namaIndex = header.indexOf("NAMA_BARANG");
       const merkIndex = header.indexOf("MERK_TIPE");
@@ -61,15 +61,20 @@ function ajukanPeminjaman(e) {
   const merkTipe = document.getElementById("merkTipe").value;
   const spesifikasi = document.getElementById("spesifikasi").value;
   const serial = document.getElementById("serialNumber").value;
-  const jumlahTersedia = document.getElementById("jumlahTersedia").value;
+  const jumlahTersedia = parseInt(document.getElementById("jumlahTersedia").value);
+  const jumlah = parseInt(document.getElementById("jumlah").value);
   const kondisi = document.getElementById("kondisi").value;
-  const jumlah = document.getElementById("jumlah").value;
   const tglPinjam = document.getElementById("tglPinjam").value;
   const tglKembali = document.getElementById("tglKembali").value;
   const tglPengajuan = new Date().toISOString().slice(0, 10);
 
   if (!nama || !idBarang || !namaBarang || !jumlah || !tglPinjam || !tglKembali) {
     alert("Mohon lengkapi semua field.");
+    return;
+  }
+
+  if (jumlah > jumlahTersedia) {
+    alert("Jumlah yang dipinjam melebihi stok tersedia.");
     return;
   }
 
