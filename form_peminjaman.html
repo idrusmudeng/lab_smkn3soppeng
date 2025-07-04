@@ -2,211 +2,109 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Form Peminjaman - SMKN 3 Soppeng</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Peminjaman Barang</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
-    :root {
-      --primary: #3B82F6;
-      --primary-dark: #2563EB;
-      --danger: #EF4444;
-      --text: #1F2937;
-      --light: #F3F4F6;
-      --white: #FFFFFF;
-      --gray: #9CA3AF;
-      --border: #E5E7EB;
-    }
-
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--light);
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
       margin: 0;
       padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      color: var(--text);
     }
 
-    .form-container {
-      background: var(--white);
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 30px 30px 40px;
-      width: 100%;
-      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .form-header {
-      margin-bottom: 25px;
+    h1 {
       text-align: center;
-    }
-
-    .form-header h1 {
-      font-size: 1.6rem;
-      margin: 0 0 5px 0;
-      font-weight: 600;
-    }
-
-    .form-header p {
-      font-size: 0.9rem;
-      color: var(--gray);
-      margin: 0;
-    }
-
-    form#formPengajuan {
-      display: grid;
-      gap: 18px;
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
+      margin-bottom: 25px;
     }
 
     label {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      color: var(--text);
+      font-weight: 500;
+      display: block;
+      margin: 15px 0 5px;
     }
 
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[list] {
-      padding: 10px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.95rem;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-      background-color: var(--white);
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
     input[readonly] {
-      background-color: #F9FAFB;
-      color: #6B7280;
+      background-color: #e5e7eb;
       cursor: not-allowed;
     }
 
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .btn {
-      padding: 12px 22px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
+    button {
+      background-color: #3b82f6;
+      color: white;
+      padding: 12px 20px;
       border: none;
-      transition: background-color 0.25s ease;
-      min-width: 110px;
-      text-align: center;
-      display: inline-block;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 1rem;
+      width: 100%;
     }
 
-    .btn-primary {
-      background-color: var(--primary);
-      color: var(--white);
-    }
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-    .btn-secondary:hover {
-      background-color: var(--primary);
-      color: var(--white);
-    }
-
-    #listBarang {
-      display: none;
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 10px;
-        align-items: center;
-      }
-      .form-container {
-        padding: 25px 20px 30px;
-        width: 100%;
-        max-width: 100%;
-      }
-      .form-actions {
-        flex-direction: column;
-        gap: 10px;
-        justify-content: center;
-      }
-      .btn {
-        min-width: unset;
-        width: 100%;
-      }
+    button:hover {
+      background-color: #2563eb;
     }
   </style>
 </head>
 <body>
-  <main class="form-container">
-    <header class="form-header">
-      <h1>Form Peminjaman Barang</h1>
-      <p>Laboratorium TKJ SMKN 3 Soppeng</p>
-    </header>
-
+  <div class="container">
+    <h1>Form Peminjaman Barang</h1>
     <form id="formPengajuan">
-      <div class="input-group">
-        <label for="namaPeminjam">Nama Peminjam</label>
-        <input type="text" id="namaPeminjam" name="namaPeminjam" required placeholder="Masukkan nama lengkap" />
-      </div>
+      <label for="namaPeminjam">Nama Peminjam</label>
+      <input type="text" id="namaPeminjam" required />
 
-      <div class="input-group">
-        <label for="idBarang">ID Barang</label>
-        <input list="listBarang" type="text" id="idBarang" name="idBarang" required placeholder="Masukkan atau pilih ID barang" autocomplete="off" />
-        <datalist id="listBarang"></datalist>
-      </div>
+      <label for="idBarang">ID Barang</label>
+      <input list="listBarang" id="idBarang" required />
+      <datalist id="listBarang"></datalist>
 
-      <div class="input-group"><label for="namaBarang">Nama Barang</label><input type="text" id="namaBarang" readonly /></div>
-      <div class="input-group"><label for="merkTipe">Merk/Tipe</label><input type="text" id="merkTipe" readonly /></div>
-      <div class="input-group"><label for="spesifikasi">Spesifikasi</label><input type="text" id="spesifikasi" readonly /></div>
-      <div class="input-group"><label for="serialNumber">Serial Number</label><input type="text" id="serialNumber" readonly /></div>
-      <div class="input-group"><label for="jumlahTersedia">Jumlah Tersedia</label><input type="text" id="jumlahTersedia" readonly /></div>
-      <div class="input-group"><label for="kondisi">Kondisi</label><input type="text" id="kondisi" readonly /></div>
+      <label for="namaBarang">Nama Barang</label>
+      <input type="text" id="namaBarang" readonly />
 
-      <div class="input-group">
-        <label for="jumlah">Jumlah Dipinjam</label>
-        <input type="number" id="jumlah" name="jumlah" min="1" required placeholder="Masukkan jumlah" />
-      </div>
+      <label for="merkTipe">Merk/Tipe</label>
+      <input type="text" id="merkTipe" readonly />
 
-      <div class="input-group">
-        <label for="tglPinjam">Tanggal Pinjam</label>
-        <input type="date" id="tglPinjam" name="tglPinjam" required />
-      </div>
+      <label for="spesifikasi">Spesifikasi</label>
+      <input type="text" id="spesifikasi" readonly />
 
-      <div class="input-group">
-        <label for="tglKembali">Tanggal Kembali</label>
-        <input type="date" id="tglKembali" name="tglKembali" required />
-      </div>
+      <label for="serialNumber">Serial Number</label>
+      <input type="text" id="serialNumber" readonly />
 
-      <div class="form-actions">
-        <a href="dashboard_guru.html" class="btn btn-secondary">Kembali</a>
-        <button type="submit" class="btn btn-primary">Ajukan Peminjaman</button>
-      </div>
+      <label for="jumlahTersedia">Jumlah Tersedia</label>
+      <input type="number" id="jumlahTersedia" readonly />
+
+      <label for="jumlah">Jumlah Dipinjam</label>
+      <input type="number" id="jumlah" min="1" required />
+
+      <label for="kondisi">Kondisi</label>
+      <input type="text" id="kondisi" readonly />
+
+      <label for="tglPinjam">Tanggal Pinjam</label>
+      <input type="date" id="tglPinjam" required />
+
+      <label for="tglKembali">Tanggal Kembali</label>
+      <input type="date" id="tglKembali" required />
+
+      <button type="submit">Ajukan Peminjaman</button>
     </form>
-  </main>
+  </div>
 
   <script src="js/form_peminjaman.js"></script>
 </body>
