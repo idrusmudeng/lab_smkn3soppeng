@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      let html = "<table border='1'><tr>";
+      let html = "<table border='1'><thead><tr>";
       const headers = data[0].concat("Tindakan");
       headers.forEach(h => html += `<th>${h}</th>`);
-      html += "</tr>";
+      html += "</tr></thead><tbody>";
 
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (row[12] === "Menunggu Persetujuan") {
           html += `<td>
-            <button onclick="setujui(${i + 1})">Setujui</button>
-            <button onclick="tolak(${i + 1})">Tolak</button>
+            <button onclick="setujui(${i + 1})" class="btn-primary">Setujui</button>
+            <button onclick="tolak(${i + 1})" style="background-color: #EF4444; color: white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Tolak</button>
           </td>`;
         } else {
           html += "<td>-</td>";
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         html += "</tr>";
       }
 
-      html += "</table>";
+      html += "</tbody></table>";
       container.innerHTML = html;
     });
 });
@@ -40,15 +40,32 @@ document.addEventListener("DOMContentLoaded", () => {
 function setujui(row) {
   updateStatus(row, "Disetujui");
 }
+
 function tolak(row) {
   updateStatus(row, "Ditolak");
 }
 
 function updateStatus(row, status) {
-  fetch(`${scriptURL}?action=updateStatus&row=${row}&status=${status}`)
+  const keterangan = (status === "Disetujui") ? "Disetujui oleh petugas" : "Ditolak oleh petugas";
+
+  const formData = new URLSearchParams({
+    action: "updateStatus",
+    row: row,
+    status: status,
+    keterangan: keterangan,
+  });
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: formData,
+  })
     .then(res => res.json())
     .then(data => {
       alert(data.message);
       location.reload();
+    })
+    .catch(err => {
+      alert("Gagal mengupdate status.");
+      console.error(err);
     });
 }
