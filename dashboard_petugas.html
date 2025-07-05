@@ -2,9 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Petugas - SMKN 3 Soppeng</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Petugas</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -12,32 +11,30 @@
     <header>
       <div class="header-title">
         <h1>Dashboard Petugas</h1>
-        <p>Laboratorium TKJ SMKN 3 Soppeng</p>
+        <p>Selamat datang, Petugas</p>
       </div>
-      <button class="logout" id="btnLogout">Logout</button>
+      <div>
+        <button class="logout" onclick="logout()">Logout</button>
+        <a href="approval.html" class="btn-primary" style="margin-left:10px;">Verifikasi Peminjaman & Pengembalian</a>
+      </div>
     </header>
 
-    <!-- Notifikasi Peminjaman -->
-    <div id="notifPeminjaman">Memuat notifikasi...</div>
-
-    <!-- Tabel Inventaris -->
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Daftar Inventaris</h2>
-        <a href="tambah.html" class="btn-primary">+ Tambah Barang</a>
       </div>
-      <div id="tabelInventaris">Memuat data inventaris...</div>
-    </div>
-
-    <!-- Form Edit Data (popup) -->
-    <div id="formEdit" class="card" style="display:none; margin-top: 20px;">
-      <div class="card-header">
-        <h3>Edit Data Inventaris</h3>
-      </div>
-      <form id="formEditData" class="form-grid"></form>
+      <div id="tabelInventaris"></div>
     </div>
   </div>
 
-  <script src="js/petugas.js"></script>
+  <script src="petugas.js"></script>
+  <script>
+    function logout() {
+      // Bersihkan session/localStorage login (ubah jika pakai sistem lain)
+      localStorage.removeItem('loggedInUser');
+      // Redirect ke halaman login
+      window.location.href = "login.html";
+    }
+  </script>
 </body>
 </html>
