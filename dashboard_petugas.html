@@ -2,43 +2,40 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Petugas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Petugas - SMKN 3 Soppeng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="dashboard-container">
-    <!-- Header -->
     <header>
       <div class="header-title">
         <h1>Dashboard Petugas</h1>
-        <p>Selamat datang, Petugas</p>
+        <p>Laboratorium TKJ SMKN 3 Soppeng</p>
       </div>
-      <div>
-        <button id="btnLogout" class="logout">Logout</button>
-      </div>
+      <button class="logout" id="logoutBtn">Logout</button>
     </header>
 
-    <!-- Notifikasi Peminjaman -->
-    <div id="notifPeminjaman" class="notif-box" style="margin: 10px 0; color: #333;"></div>
-
-    <!-- Tabel Inventaris -->
-    <div class="card">
-      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 class="card-title">Daftar Inventaris</h2>
-        <a href="approval.html" class="btn-primary">Verifikasi Peminjaman & Pengembalian</a>
-      </div>
-      <div id="tabelInventaris"></div>
+    <div id="notifPeminjaman" style="display:none;">
+      Ada pengajuan peminjaman yang perlu diverifikasi. 
+      <a href="approval.html">Klik di sini untuk verifikasi</a>.
     </div>
 
-    <!-- Form Edit Data -->
-    <div id="formEdit" class="edit-form" style="display: none; margin-top: 20px;">
-      <h3>Edit Data Inventaris</h3>
-      <form id="formEditData"></form>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Daftar Inventaris</h2>
+        <a href="approval.html" class="btn-primary">Verifikasi Peminjaman</a>
+      </div>
+      <div id="tabelInventaris">Memuat data...</div>
     </div>
   </div>
 
-  <!-- Script JavaScript -->
   <script src="js/petugas.js"></script>
+  <script>
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+      window.location.href = "index.html";
+    });
+  </script>
 </body>
 </html>
