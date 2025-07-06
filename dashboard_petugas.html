@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard Petugas - SMKN 3 Soppeng</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
@@ -14,27 +14,30 @@
         <h1>Dashboard Petugas</h1>
         <p>Laboratorium TKJ SMKN 3 Soppeng</p>
       </div>
-      <button class="logout" id="logoutBtn">Logout</button>
+      <div>
+        <button class="logout" id="logoutBtn">Logout</button>
+      </div>
     </header>
 
-    <div id="notifPeminjaman" style="display:none;">
-      Ada pengajuan peminjaman yang perlu diverifikasi. 
-      <a href="approval.html">Klik di sini untuk verifikasi</a>.
-    </div>
-
     <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Daftar Inventaris</h2>
-        <a href="approval.html" class="btn-primary">Verifikasi Peminjaman</a>
+      <div class="card-header" style="gap: 10px; flex-wrap: wrap; display: flex; align-items: center; justify-content: space-between;">
+        <h2 class="card-title" style="margin:0;">Daftar Inventaris</h2>
+        <div style="display:flex; gap: 10px;">
+          <a href="tambah_inventaris.html" class="btn-primary" title="Tambah Inventaris Baru">Tambah Inventaris</a>
+          <a href="approval.html" class="btn-primary" title="Verifikasi Peminjaman">Approval Peminjaman</a>
+        </div>
       </div>
-      <div id="tabelInventaris">Memuat data...</div>
+      <div id="notifPeminjaman" style="display:none;"></div>
+      <div id="tabelInventaris">Memuat data inventaris...</div>
     </div>
   </div>
 
   <script src="js/petugas.js"></script>
   <script>
-    document.getElementById("logoutBtn").addEventListener("click", function () {
-      window.location.href = "index.html";
+    // Logout button script
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      // Logout: kembali ke halaman login.html
+      window.location.href = "login.html";
     });
   </script>
 </body>
