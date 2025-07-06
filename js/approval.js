@@ -1,11 +1,13 @@
-// === approval.js (Versi Terbaru dengan Pengembalian) ===
+// === approval.js (Final dengan pengembalian) ===
+
+const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
 document.addEventListener("DOMContentLoaded", function () {
   fetchDataPengajuan();
 });
 
 function fetchDataPengajuan() {
-  fetch("https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec?action=getPengajuan")
+  fetch(scriptURL + "?action=getPengajuan")
     .then((res) => res.json())
     .then((data) => renderTabelPengajuan(data))
     .catch((err) => console.error("Gagal mengambil data:", err));
@@ -45,12 +47,12 @@ function renderTabelPengajuan(data) {
     if (row[12] === "Menunggu Persetujuan") {
       const setujuiBtn = document.createElement("button");
       setujuiBtn.textContent = "Setujui";
-      setujuiBtn.className = "btn-primary";
+      setujuiBtn.className = "btn-approve";
       setujuiBtn.onclick = () => prosesPersetujuan(i + 2, "Disetujui");
 
       const tolakBtn = document.createElement("button");
       tolakBtn.textContent = "Tolak";
-      tolakBtn.className = "logout";
+      tolakBtn.className = "btn-reject";
       tolakBtn.onclick = () => prosesPersetujuan(i + 2, "Ditolak");
 
       aksiCell.appendChild(setujuiBtn);
@@ -58,7 +60,7 @@ function renderTabelPengajuan(data) {
     } else if (row[12] === "Disetujui") {
       const kembaliBtn = document.createElement("button");
       kembaliBtn.textContent = "Proses Pengembalian";
-      kembaliBtn.className = "btn-primary";
+      kembaliBtn.className = "btn-return";
       kembaliBtn.onclick = () => tampilkanFormPengembalian(i + 2);
       aksiCell.appendChild(kembaliBtn);
     } else {
@@ -77,7 +79,7 @@ function prosesPersetujuan(rowIndex, status) {
   const keterangan = prompt("Masukkan keterangan:", "");
   if (keterangan === null) return;
 
-  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+  fetch(scriptURL, {
     method: "POST",
     body: new URLSearchParams({
       action: "updateStatus",
@@ -101,7 +103,7 @@ function tampilkanFormPengembalian(rowIndex) {
   const kondisi = prompt("Kondisi saat dikembalikan (Baik/Rusak Ringan/Rusak Berat):", "Baik");
   if (!kondisi) return alert("Kondisi wajib diisi.");
 
-  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+  fetch(scriptURL, {
     method: "POST",
     body: new URLSearchParams({
       action: "prosesPengembalian",
