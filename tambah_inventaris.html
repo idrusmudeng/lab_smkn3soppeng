@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tambah Inventaris</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>Tambah Barang Inventaris Baru</h1>
+    <form id="formTambahInventaris">
+      <div class="input-group">
+        <label for="ID_BARANG">ID Barang (unik)*</label>
+        <input type="text" id="ID_BARANG" name="ID_BARANG" required />
+      </div>
+      <div class="input-group">
+        <label for="NAMA_BARANG">Nama Barang*</label>
+        <input type="text" id="NAMA_BARANG" name="NAMA_BARANG" required />
+      </div>
+      <div class="input-group">
+        <label for="KATEGORI">Kategori</label>
+        <input type="text" id="KATEGORI" name="KATEGORI" />
+      </div>
+      <div class="input-group">
+        <label for="MERK_TIPE">Merk/Tipe</label>
+        <input type="text" id="MERK_TIPE" name="MERK_TIPE" />
+      </div>
+      <div class="input-group">
+        <label for="SPESIFIKASI">Spesifikasi</label>
+        <input type="text" id="SPESIFIKASI" name="SPESIFIKASI" />
+      </div>
+      <div class="input-group">
+        <label for="JUMLAH">Jumlah*</label>
+        <input type="number" id="JUMLAH" name="JUMLAH" min="1" value="1" required />
+      </div>
+      <div class="input-group">
+        <label for="SATUAN">Satuan</label>
+        <input type="text" id="SATUAN" name="SATUAN" />
+      </div>
+      <div class="input-group">
+        <label for="LOKASI">Lokasi</label>
+        <input type="text" id="LOKASI" name="LOKASI" />
+      </div>
+      <div class="input-group">
+        <label for="KONDISI">Kondisi</label>
+        <input type="text" id="KONDISI" name="KONDISI" />
+      </div>
+      <div class="input-group">
+        <label for="SERIAL_NUMBER">Serial Number</label>
+        <input type="text" id="SERIAL_NUMBER" name="SERIAL_NUMBER" />
+      </div>
+      <div class="input-group">
+        <label for="FOTO">Foto (URL atau deskripsi)</label>
+        <input type="text" id="FOTO" name="FOTO" />
+      </div>
+      <div class="input-group">
+        <label for="KETERANGAN">Keterangan</label>
+        <input type="text" id="KETERANGAN" name="KETERANGAN" />
+      </div>
+      <div class="input-group">
+        <label for="HARGA">Harga</label>
+        <input type="number" id="HARGA" name="HARGA" min="0" step="0.01" />
+      </div>
+      <div class="input-group">
+        <label for="SUMBER_DANA">Sumber Dana</label>
+        <input type="text" id="SUMBER_DANA" name="SUMBER_DANA" />
+      </div>
+
+      <button type="submit">Tambah Barang</button>
+    </form>
+
+    <div id="resultMessage" style="margin-top:15px;"></div>
+  </div>
+
+  <script src="js/tambah_inventaris.js"></script>
+</body>
+</html>
