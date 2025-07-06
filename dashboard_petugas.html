@@ -14,27 +14,29 @@
         <p>Selamat datang, Petugas</p>
       </div>
       <div>
-        <button class="logout" onclick="logout()">Logout</button>
+        <button id="btnLogout" class="logout">Logout</button>
         <a href="approval.html" class="btn-primary" style="margin-left:10px;">Verifikasi Peminjaman & Pengembalian</a>
       </div>
     </header>
 
+    <!-- Notifikasi Peminjaman -->
+    <div id="notifPeminjaman" class="notif-box" style="margin: 10px 0; color: #333;"></div>
+
+    <!-- Daftar Inventaris -->
     <div class="card">
       <div class="card-header">
         <h2 class="card-title">Daftar Inventaris</h2>
       </div>
       <div id="tabelInventaris"></div>
     </div>
+
+    <!-- Form Edit Data -->
+    <div id="formEdit" class="edit-form" style="display: none; margin-top: 20px;">
+      <h3>Edit Data Inventaris</h3>
+      <form id="formEditData"></form>
+    </div>
   </div>
 
   <script src="petugas.js"></script>
-  <script>
-    function logout() {
-      // Bersihkan session/localStorage login (ubah jika pakai sistem lain)
-      localStorage.removeItem('loggedInUser');
-      // Redirect ke halaman login
-      window.location.href = "login.html";
-    }
-  </script>
 </body>
 </html>
