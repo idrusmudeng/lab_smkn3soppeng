@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
   <style>
-    /* Tambahan khusus untuk modal dan penyesuaian tombol */
+    /* Modal & tombol styling */
     #modalPengembalian {
       display: none;
       position: fixed;
@@ -21,7 +21,7 @@
       display: flex;
     }
     #modalContent {
-      background: var(--white);
+      background: #fff;
       padding: 20px;
       border-radius: 8px;
       width: 400px;
@@ -36,49 +36,49 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 24px;
-      color: var(--gray);
+      color: #888;
       user-select: none;
     }
     label {
       display: block;
       margin-top: 10px;
       font-weight: 600;
-      color: var(--text);
+      color: #333;
     }
     select, input[type="number"], input[type="text"] {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
-      border: 1px solid #E5E7EB;
+      border: 1px solid #ddd;
       border-radius: 6px;
       font-size: 0.9rem;
-      background: var(--light);
+      background: #f9f9f9;
       box-sizing: border-box;
       transition: border-color 0.2s;
     }
     select:focus, input[type="number"]:focus, input[type="text"]:focus {
       outline: none;
-      border-color: var(--primary);
+      border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-      background: var(--white);
+      background: #fff;
     }
     .btn-approve {
-      background-color: var(--primary);
-      color: var(--white);
+      background-color: #3b82f6;
+      color: white;
       border: none;
       border-radius: 6px;
       padding: 6px 12px;
       font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.2s;
       margin-right: 5px;
+      transition: background-color 0.2s;
     }
     .btn-approve:hover {
-      background-color: var(--primary-dark);
+      background-color: #2563eb;
     }
     .btn-reject {
-      background-color: var(--danger);
-      color: var(--white);
+      background-color: #ef4444;
+      color: white;
       border: none;
       border-radius: 6px;
       padding: 6px 12px;
@@ -87,11 +87,11 @@
       transition: background-color 0.2s;
     }
     .btn-reject:hover {
-      background-color: var(--danger-dark);
+      background-color: #b91c1c;
     }
     .btn-return {
-      background-color: var(--secondary);
-      color: var(--white);
+      background-color: #fbbf24;
+      color: white;
       border: none;
       border-radius: 6px;
       padding: 6px 12px;
@@ -100,7 +100,7 @@
       transition: background-color 0.2s;
     }
     .btn-return:hover {
-      background-color: #b37500; /* sedikit gelap dari var(--secondary) */
+      background-color: #b37500;
     }
     #formPengembalian button {
       width: 100%;
@@ -115,19 +115,19 @@
     th, td {
       padding: 12px 15px;
       text-align: left;
-      border-bottom: 1px solid #E5E7EB;
+      border-bottom: 1px solid #ddd;
     }
     th {
-      background-color: #F9FAFB;
+      background-color: #f3f4f6;
       font-weight: 600;
     }
     tr:hover {
-      background-color: #F9FAFB;
+      background-color: #f9fafb;
     }
     #backButton {
       display: inline-block;
-      background: var(--primary);
-      color: var(--white);
+      background: #3b82f6;
+      color: white;
       padding: 8px 16px;
       border-radius: 6px;
       text-decoration: none;
@@ -136,7 +136,7 @@
       transition: background-color 0.2s;
     }
     #backButton:hover {
-      background: var(--primary-dark);
+      background: #2563eb;
     }
   </style>
 </head>
@@ -163,10 +163,12 @@
         <label>Kondisi Pengembalian</label>
         <select id="returnKondisi" required>
           <option value="">--Pilih Kondisi--</option>
-          <option value="Baik">Baik</option>
+          <option value="Normal">Normal</option>
           <option value="Rusak Ringan">Rusak Ringan</option>
           <option value="Rusak Berat">Rusak Berat</option>
         </select>
+        <label>Keterangan (opsional)</label>
+        <input type="text" id="returnKeterangan" placeholder="Deskripsi kondisi pengembalian" />
         <button type="submit" class="btn-return">Proses Pengembalian</button>
       </form>
     </div>
