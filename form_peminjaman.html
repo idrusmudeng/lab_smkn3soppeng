@@ -6,6 +6,89 @@
   <title>Form Peminjaman Barang - SMKN 3 Soppeng</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Penyesuaian kecil tambahan jika perlu */
+    .dashboard-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #E5E7EB;
+      margin-bottom: 20px;
+    }
+    .header-title h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: var(--text, #1F2937);
+    }
+    .header-title p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      color: var(--gray, #9CA3AF);
+    }
+    .btn-primary {
+      background-color: var(--primary, #3B82F6);
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: background-color 0.2s;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark, #2563EB);
+    }
+    .form-container label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: var(--text, #1F2937);
+    }
+    .form-container input[type="text"],
+    .form-container input[type="number"],
+    .form-container input[type="date"],
+    .form-container input[list] {
+      width: 100%;
+      padding: 8px 12px;
+      margin-top: 6px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      color: var(--text, #1F2937);
+      background-color: white;
+    }
+    .form-container input[readonly] {
+      background-color: #f9fafb;
+    }
+    .btn-submit {
+      margin-top: 20px;
+      background-color: var(--primary, #3B82F6);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+      width: 100%;
+    }
+    .btn-submit:hover {
+      background-color: var(--primary-dark, #2563EB);
+    }
+    .message {
+      margin-top: 15px;
+      font-weight: 600;
+      min-height: 1.2em;
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container">
@@ -83,12 +166,7 @@
           document.getElementById("jumlahTersedia").value = detail.JUMLAH || 0;
           document.getElementById("kondisi").value = detail.KONDISI || "";
         } else {
-          document.getElementById("namaBarang").value = "";
-          document.getElementById("merkTipe").value = "";
-          document.getElementById("spesifikasi").value = "";
-          document.getElementById("serialNumber").value = "";
-          document.getElementById("jumlahTersedia").value = "";
-          document.getElementById("kondisi").value = "";
+          clearDetailBarang();
         }
       });
     });
@@ -125,8 +203,8 @@
             datalist.appendChild(option);
           });
         })
-        .catch(err => {
-          document.getElementById("message").textContent = "Gagal memuat daftar barang.";
+        .catch(() => {
+          showMessage("Gagal memuat daftar barang.", true);
         });
     }
 
@@ -165,7 +243,6 @@
         if (result.status === "success") {
           showMessage("Pengajuan berhasil disimpan.", false);
           form.reset();
-          // Kosongkan detail barang juga
           clearDetailBarang();
           loadInventarisList();
         } else {
@@ -180,7 +257,7 @@
     function showMessage(msg, isError = false) {
       const messageDiv = document.getElementById("message");
       messageDiv.textContent = msg;
-      messageDiv.style.color = isError ? "var(--danger)" : "green";
+      messageDiv.style.color = isError ? "var(--danger, #EF4444)" : "green";
     }
 
     function clearDetailBarang() {
