@@ -5,118 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Form Peminjaman Barang - SMKN 3 Soppeng</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary: #3B82F6;
-      --primary-dark: #2563EB;
-      --danger: #EF4444;
-      --danger-dark: #DC2626;
-      --text: #1F2937;
-      --light: #F3F4F6;
-      --white: #FFFFFF;
-      --gray: #9CA3AF;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--light);
-      margin: 0;
-      padding: 0;
-      color: var(--text);
-    }
-
-    .dashboard-container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #E5E7EB;
-      margin-bottom: 20px;
-    }
-
-    .header-title h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: var(--text);
-    }
-
-    .header-title p {
-      margin: 4px 0 0;
-      font-size: 0.9rem;
-      color: var(--gray);
-    }
-
-    a.btn-primary {
-      background-color: var(--primary);
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: 500;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
-    }
-    a.btn-primary:hover {
-      background-color: var(--primary-dark);
-    }
-
-    form {
-      background: var(--white);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select {
-      width: 100%;
-      padding: 8px 12px;
-      margin-top: 6px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    input[readonly] {
-      background-color: #f9fafb;
-    }
-
-    button.submit-btn {
-      margin-top: 20px;
-      background-color: var(--primary);
-      border: none;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: background-color 0.2s;
-      width: 100%;
-    }
-    button.submit-btn:hover {
-      background-color: var(--primary-dark);
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="dashboard-container">
-    <header>
+    <header class="header">
       <div class="header-title">
         <h1>Form Peminjaman Barang</h1>
         <p>Laboratorium TKJ SMKN 3 Soppeng</p>
@@ -124,45 +17,177 @@
       <a href="dashboard_guru.html" class="btn-primary">← Kembali</a>
     </header>
 
-    <form id="formPengajuan">
+    <form id="formPengajuan" class="form-container">
       <label for="namaPeminjam">Nama Peminjam</label>
-      <input type="text" id="namaPeminjam" name="namaPeminjam" placeholder="Masukkan nama peminjam" required />
+      <input type="text" id="namaPeminjam" name="nama_peminjam" placeholder="Masukkan nama peminjam" required />
 
       <label for="idBarang">ID Barang</label>
-      <input list="listBarang" id="idBarang" name="idBarang" placeholder="Pilih ID Barang" autocomplete="off" required />
+      <input list="listBarang" id="idBarang" name="ID_BARANG" placeholder="Pilih ID Barang" autocomplete="off" required />
       <datalist id="listBarang"></datalist>
 
       <label for="namaBarang">Nama Barang</label>
-      <input type="text" id="namaBarang" name="namaBarang" readonly />
+      <input type="text" id="namaBarang" name="nama_barang" readonly />
 
       <label for="merkTipe">Merk / Tipe</label>
-      <input type="text" id="merkTipe" name="merkTipe" readonly />
+      <input type="text" id="merkTipe" name="MERK_TIPE" readonly />
 
       <label for="spesifikasi">Spesifikasi</label>
-      <input type="text" id="spesifikasi" name="spesifikasi" readonly />
+      <input type="text" id="spesifikasi" name="SPESIFIKASI" readonly />
 
       <label for="serialNumber">Serial Number</label>
-      <input type="text" id="serialNumber" name="serialNumber" readonly />
+      <input type="text" id="serialNumber" name="SERIAL_NUMBER" readonly />
 
       <label for="jumlahTersedia">Jumlah Tersedia</label>
-      <input type="number" id="jumlahTersedia" name="jumlahTersedia" readonly />
+      <input type="number" id="jumlahTersedia" name="jumlah_tersedia" readonly />
 
       <label for="kondisi">Kondisi</label>
-      <input type="text" id="kondisi" name="kondisi" readonly />
+      <input type="text" id="kondisi" name="KONDISI" readonly />
 
       <label for="jumlah">Jumlah Dipinjam</label>
-      <input type="number" id="jumlah" name="jumlah" min="1" placeholder="Masukkan jumlah yang ingin dipinjam" required />
+      <input type="number" id="jumlah" name="jumlah_dipinjam" min="1" placeholder="Masukkan jumlah yang ingin dipinjam" required />
 
       <label for="tglPinjam">Tanggal Pinjam</label>
-      <input type="date" id="tglPinjam" name="tglPinjam" required />
+      <input type="date" id="tglPinjam" name="tanggal_pinjam" required />
 
       <label for="tglKembali">Tanggal Kembali</label>
-      <input type="date" id="tglKembali" name="tglKembali" required />
+      <input type="date" id="tglKembali" name="tanggal_kembali" required />
 
-      <button type="submit" class="submit-btn">Ajukan Peminjaman</button>
+      <button type="submit" class="btn-submit">Ajukan Peminjaman</button>
     </form>
+
+    <div id="message" class="message"></div>
   </div>
 
-  <script src="js/form_peminjaman.js"></script>
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadInventarisList();
+
+      const form = document.getElementById("formPengajuan");
+      form.addEventListener("submit", e => {
+        e.preventDefault();
+        submitForm();
+      });
+
+      document.getElementById("idBarang").addEventListener("input", e => {
+        const val = e.target.value;
+        const option = Array.from(document.getElementById("listBarang").options)
+                          .find(opt => opt.value === val);
+        if (option) {
+          const detail = JSON.parse(option.dataset.detail);
+          document.getElementById("namaBarang").value = detail.NAMA_BARANG || "";
+          document.getElementById("merkTipe").value = detail.MERK_TIPE || "";
+          document.getElementById("spesifikasi").value = detail.SPESIFIKASI || "";
+          document.getElementById("serialNumber").value = detail.SERIAL_NUMBER || "";
+          document.getElementById("jumlahTersedia").value = detail.JUMLAH || 0;
+          document.getElementById("kondisi").value = detail.KONDISI || "";
+        } else {
+          document.getElementById("namaBarang").value = "";
+          document.getElementById("merkTipe").value = "";
+          document.getElementById("spesifikasi").value = "";
+          document.getElementById("serialNumber").value = "";
+          document.getElementById("jumlahTersedia").value = "";
+          document.getElementById("kondisi").value = "";
+        }
+      });
+    });
+
+    function loadInventarisList() {
+      fetch(scriptURL + "?action=viewInventaris")
+        .then(res => res.json())
+        .then(data => {
+          const datalist = document.getElementById("listBarang");
+          datalist.innerHTML = "";
+
+          const header = data[0];
+          const idxID = header.indexOf("ID_BARANG");
+          const idxNama = header.indexOf("NAMA_BARANG");
+          const idxMerk = header.indexOf("MERK_TIPE");
+          const idxSpesifikasi = header.indexOf("SPESIFIKASI");
+          const idxSerial = header.indexOf("SERIAL_NUMBER");
+          const idxJumlah = header.indexOf("JUMLAH");
+          const idxKondisi = header.indexOf("KONDISI");
+
+          data.slice(1).forEach(row => {
+            const detail = {
+              NAMA_BARANG: row[idxNama],
+              MERK_TIPE: row[idxMerk],
+              SPESIFIKASI: row[idxSpesifikasi],
+              SERIAL_NUMBER: row[idxSerial],
+              JUMLAH: row[idxJumlah],
+              KONDISI: row[idxKondisi]
+            };
+
+            const option = document.createElement("option");
+            option.value = row[idxID];
+            option.dataset.detail = JSON.stringify(detail);
+            datalist.appendChild(option);
+          });
+        })
+        .catch(err => {
+          document.getElementById("message").textContent = "Gagal memuat daftar barang.";
+        });
+    }
+
+    function submitForm() {
+      const form = document.getElementById("formPengajuan");
+      const formData = new FormData(form);
+
+      const jumlahDipinjam = parseInt(formData.get("jumlah_dipinjam") || "0");
+      const jumlahTersedia = parseInt(formData.get("jumlah_tersedia") || "0");
+
+      if (jumlahDipinjam > jumlahTersedia) {
+        showMessage("Jumlah yang dipinjam melebihi stok tersedia.", true);
+        return;
+      }
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "ajukanPeminjaman",
+          tanggal_pengajuan: new Date().toISOString().slice(0,10),
+          nama_peminjam: formData.get("nama_peminjam"),
+          ID_BARANG: formData.get("ID_BARANG"),
+          nama_barang: formData.get("nama_barang"),
+          MERK_TIPE: formData.get("MERK_TIPE"),
+          SPESIFIKASI: formData.get("SPESIFIKASI"),
+          SERIAL_NUMBER: formData.get("SERIAL_NUMBER"),
+          jumlah_tersedia: formData.get("jumlah_tersedia"),
+          jumlah_dipinjam: formData.get("jumlah_dipinjam"),
+          KONDISI: formData.get("KONDISI"),
+          tanggal_pinjam: formData.get("tanggal_pinjam"),
+          tanggal_kembali: formData.get("tanggal_kembali")
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === "success") {
+          showMessage("Pengajuan berhasil disimpan.", false);
+          form.reset();
+          // Kosongkan detail barang juga
+          clearDetailBarang();
+          loadInventarisList();
+        } else {
+          showMessage(result.message || "Terjadi kesalahan saat mengajukan.", true);
+        }
+      })
+      .catch(() => {
+        showMessage("Gagal mengirim pengajuan.", true);
+      });
+    }
+
+    function showMessage(msg, isError = false) {
+      const messageDiv = document.getElementById("message");
+      messageDiv.textContent = msg;
+      messageDiv.style.color = isError ? "var(--danger)" : "green";
+    }
+
+    function clearDetailBarang() {
+      ["namaBarang", "merkTipe", "spesifikasi", "serialNumber", "jumlahTersedia", "kondisi"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+    }
+  </script>
 </body>
 </html>
