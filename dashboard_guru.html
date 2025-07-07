@@ -9,10 +9,7 @@
 <body>
   <div class="dashboard-container">
     <header class="header">
-      <div class="header-title">
-        <h1>Dashboard Guru</h1>
-        <p>Laboratorium TKJ SMKN 3 Soppeng</p>
-      </div>
+      <h1>Dashboard Guru</h1>
       <button id="logoutBtn" class="btn-logout">Logout</button>
     </header>
 
@@ -24,202 +21,24 @@
     <section style="margin-top: 30px;">
       <h2>Keranjang Peminjaman</h2>
       <div id="keranjangContainer">
-        <p>Keranjang kosong.</p>
+        <table id="keranjangTable" border="1" style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>ID_BARANG</th>
+              <th>NAMA_BARANG</th>
+              <th>JUMLAH_DIPINJAM</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- isi keranjang -->
+          </tbody>
+        </table>
+        <button id="ajukanKeranjangBtn" class="btn-submit" style="margin-top: 10px;">Ajukan Peminjaman Keranjang</button>
       </div>
-      <button id="ajukanKeranjangBtn" class="btn-primary" style="display:none; margin-top: 10px;">
-        Ajukan Peminjaman dari Keranjang
-      </button>
     </section>
-
-    <a href="form_peminjaman.html" class="btn-primary" style="margin-top: 20px; display: inline-block;">
-      Buka Form Peminjaman Barang
-    </a>
   </div>
 
-  <script src="js/keranjang.js"></script>
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const role = localStorage.getItem("role");
-      if (role !== "guru") {
-        alert("Anda bukan guru. Akses ditolak.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.clear();
-        window.location.href = "index.html";
-      });
-
-      loadInventaris();
-      loadKeranjang();
-    });
-
-    let inventarisData = [];
-    let keranjang = [];
-
-    function loadInventaris() {
-      fetch(scriptURL + "?action=viewInventaris")
-        .then(res => res.json())
-        .then(data => {
-          inventarisData = data;
-          renderInventarisTable();
-        })
-        .catch(() => {
-          document.getElementById("tabelInventaris").innerHTML = "Gagal memuat data inventaris.";
-        });
-    }
-
-    function renderInventarisTable() {
-      if (!inventarisData || inventarisData.length === 0) {
-        document.getElementById("tabelInventaris").innerHTML = "Tidak ada data inventaris.";
-        return;
-      }
-
-      const header = inventarisData[0];
-      const body = inventarisData.slice(1);
-
-      // Kolom yang mau ditampilkan
-      const columnsToShow = [
-        "ID_BARANG",
-        "NAMA_BARANG",
-        "MERK_TIPE",
-        "SPESIFIKASI",
-        "JUMLAH",
-        "KONDISI"
-      ];
-
-      const indices = columnsToShow.map(col => header.indexOf(col));
-
-      let html = "<table class='table'>";
-      html += "<thead><tr>";
-      columnsToShow.forEach(col => {
-        html += `<th>${col.replace(/_/g, " ")}</th>`;
-      });
-      html += "<th>Aksi</th>";
-      html += "</tr></thead><tbody>";
-
-      body.forEach((row, idx) => {
-        html += "<tr>";
-        indices.forEach(i => {
-          html += `<td>${row[i] || ""}</td>`;
-        });
-        html += `<td><button class="btn-add-keranjang" data-index="${idx + 1}">Tambah ke Keranjang</button></td>`;
-        html += "</tr>";
-      });
-
-      html += "</tbody></table>";
-
-      document.getElementById("tabelInventaris").innerHTML = html;
-
-      // Pasang event listener tombol tambah keranjang
-      document.querySelectorAll(".btn-add-keranjang").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const rowIndex = parseInt(btn.dataset.index);
-          addToKeranjang(rowIndex);
-        });
-      });
-    }
-
-    function loadKeranjang() {
-      const saved = localStorage.getItem("keranjang");
-      keranjang = saved ? JSON.parse(saved) : [];
-      renderKeranjang();
-    }
-
-    function saveKeranjang() {
-      localStorage.setItem("keranjang", JSON.stringify(keranjang));
-    }
-
-    function renderKeranjang() {
-      const container = document.getElementById("keranjangContainer");
-      const ajukanBtn = document.getElementById("ajukanKeranjangBtn");
-
-      if (keranjang.length === 0) {
-        container.innerHTML = "<p>Keranjang kosong.</p>";
-        ajukanBtn.style.display = "none";
-        return;
-      }
-
-      let html = "<table class='table'>";
-      html += "<thead><tr><th>ID Barang</th><th>Nama Barang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody>";
-
-      keranjang.forEach((item, i) => {
-        html += `<tr>
-          <td>${item.ID_BARANG}</td>
-          <td>${item.NAMA_BARANG}</td>
-          <td>${item.JUMLAH_DIPINJAM}</td>
-          <td><button class="btn-remove-keranjang" data-index="${i}">Hapus</button></td>
-        </tr>`;
-      });
-
-      html += "</tbody></table>";
-      container.innerHTML = html;
-      ajukanBtn.style.display = "inline-block";
-
-      // Pasang event listener hapus item keranjang
-      document.querySelectorAll(".btn-remove-keranjang").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const i = parseInt(btn.dataset.index);
-          keranjang.splice(i, 1);
-          saveKeranjang();
-          renderKeranjang();
-        });
-      });
-
-      // Pasang event listener tombol ajukan
-      ajukanBtn.onclick = ajukanKeranjang;
-    }
-
-    function addToKeranjang(rowIndex) {
-      const header = inventarisData[0];
-      const row = inventarisData[rowIndex];
-      if (!row) return;
-
-      const idIndex = header.indexOf("ID_BARANG");
-      const namaIndex = header.indexOf("NAMA_BARANG");
-      const jumlahIndex = header.indexOf("JUMLAH");
-
-      const idBarang = row[idIndex];
-      const namaBarang = row[namaIndex];
-      const jumlahTersedia = parseInt(row[jumlahIndex]) || 0;
-
-      // Cek kalau sudah ada di keranjang
-      const existing = keranjang.find(item => item.ID_BARANG === idBarang);
-      if (existing) {
-        alert("Barang sudah ada di keranjang.");
-        return;
-      }
-
-      // Default jumlah dipinjam 1
-      if (jumlahTersedia <= 0) {
-        alert("Stok barang kosong, tidak bisa ditambahkan.");
-        return;
-      }
-
-      keranjang.push({
-        ID_BARANG: idBarang,
-        NAMA_BARANG: namaBarang,
-        JUMLAH_DIPINJAM: 1,
-      });
-
-      saveKeranjang();
-      renderKeranjang();
-      alert(`Barang "${namaBarang}" berhasil ditambahkan ke keranjang.`);
-    }
-
-    function ajukanKeranjang() {
-      if (keranjang.length === 0) {
-        alert("Keranjang kosong.");
-        return;
-      }
-
-      // Redirect ke form peminjaman untuk proses lanjut
-      // Keranjang akan digunakan di form_peminjaman.html via localStorage
-      window.location.href = "form_peminjaman.html";
-    }
-  </script>
+  <script src="js/dashboard_guru.js"></script>
 </body>
 </html>
