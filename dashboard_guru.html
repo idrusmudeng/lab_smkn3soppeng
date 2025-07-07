@@ -7,44 +7,45 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header>
-    <h1>Dashboard Guru</h1>
-    <button id="logoutBtn">Logout</button>
-  </header>
+  <div class="dashboard-container">
+    <header>
+      <div class="header-title">
+        <h1>Dashboard Guru</h1>
+      </div>
+      <button id="logoutBtn" class="logout">Logout</button>
+    </header>
 
-  <section>
-    <h2>Daftar Inventaris Barang</h2>
-    <table id="inventarisTable" border="1" cellpadding="5" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID Barang</th>
-          <th>Nama Barang</th>
-          <th>Merk/Tipe</th>
-          <th>Spesifikasi</th>
-          <th>Jumlah Tersedia</th>
-          <th>Kondisi</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">Daftar Inventaris Barang</h2>
+      </div>
+      <div id="tabelInventaris">
+        <!-- Tabel inventaris akan dimuat di sini -->
+      </div>
+    </section>
 
-  <section>
-    <h2>Keranjang Peminjaman</h2>
-    <table id="keranjangTable" border="1" cellpadding="5" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID Barang</th>
-          <th>Nama Barang</th>
-          <th>Jumlah Pinjam</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button id="ajukanBtn">Ajukan Peminjaman</button>
-  </section>
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">Keranjang Peminjaman</h2>
+      </div>
+      <div id="keranjangContainer">
+        <table id="tabelKeranjang" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th>ID Barang</th>
+              <th>Nama Barang</th>
+              <th>Jumlah Pinjam</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Isi keranjang akan muncul di sini -->
+          </tbody>
+        </table>
+      </div>
+      <button id="ajukanBtn" class="btn-primary" style="margin-top: 15px;">Ajukan Peminjaman</button>
+    </section>
+  </div>
 
   <script src="js/guru.js"></script>
 </body>
