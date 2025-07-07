@@ -3,50 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Guru</title>
+  <title>Dashboard Guru - Peminjaman Barang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    table {
+      width: 100%; border-collapse: collapse; margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc; padding: 8px; text-align: left;
+    }
+    button.btn-add, button.btn-remove, button.btn-submit {
+      cursor: pointer; padding: 6px 12px; border: none; border-radius: 4px;
+    }
+    button.btn-add {
+      background-color: #3B82F6; color: white;
+    }
+    button.btn-remove {
+      background-color: #EF4444; color: white;
+    }
+    button.btn-submit {
+      background-color: #10B981; color: white; width: 100%; font-weight: 600;
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container">
-    <header>
-      <div class="header-title">
-        <h1>Dashboard Guru</h1>
-      </div>
-      <button id="logoutBtn" class="logout">Logout</button>
+    <header class="header">
+      <h1>Dashboard Guru - Peminjaman Barang</h1>
+      <button id="logoutBtn" class="btn-submit" style="width:auto; margin-bottom:15px;">Logout</button>
     </header>
 
-    <section class="card">
-      <div class="card-header">
-        <h2 class="card-title">Daftar Inventaris Barang</h2>
-      </div>
-      <div id="tabelInventaris">
-        <!-- Tabel inventaris akan dimuat di sini -->
-      </div>
+    <section>
+      <h2>Daftar Inventaris</h2>
+      <table id="inventarisTable">
+        <thead>
+          <tr>
+            <th>ID Barang</th>
+            <th>Nama Barang</th>
+            <th>Merk/Tipe</th>
+            <th>Spesifikasi</th>
+            <th>Jumlah Tersedia</th>
+            <th>Kondisi</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data inventaris akan di-load di sini -->
+        </tbody>
+      </table>
     </section>
 
-    <section class="card">
-      <div class="card-header">
-        <h2 class="card-title">Keranjang Peminjaman</h2>
-      </div>
-      <div id="keranjangContainer">
-        <table id="tabelKeranjang" style="width: 100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th>ID Barang</th>
-              <th>Nama Barang</th>
-              <th>Jumlah Pinjam</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Isi keranjang akan muncul di sini -->
-          </tbody>
-        </table>
-      </div>
-      <button id="ajukanBtn" class="btn-primary" style="margin-top: 15px;">Ajukan Peminjaman</button>
+    <section>
+      <h2>Keranjang Peminjaman</h2>
+      <table id="keranjangTable">
+        <thead>
+          <tr>
+            <th>ID Barang</th>
+            <th>Nama Barang</th>
+            <th>Jumlah Dipinjam</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Barang yang ditambahkan ke keranjang -->
+        </tbody>
+      </table>
+      <button id="ajukanBtn" class="btn-submit">Ajukan Peminjaman</button>
     </section>
+
+    <div id="message" style="margin-top:15px; font-weight:600;"></div>
   </div>
 
-  <script src="js/guru.js"></script>
+  <script src="js/keranjang.js"></script>
 </body>
 </html>
