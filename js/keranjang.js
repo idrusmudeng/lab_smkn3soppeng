@@ -1,12 +1,179 @@
 const scriptURL = "https://script.google.com/macros/s/AKfycbx3QrtXq3gxCgm46jTZTJjh5qjK1kw1ZQxqP0lc43ka6CKg5BkCG3UF9aEGzO7pDzR98Q/exec";
 
 let inventarisList = [];
-let keranjang = [];
+let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
 
-document.addEventListener("DOMContentLoaded", () => {
+// Simpan keranjang ke localStorage
+function simpanKeranjang() {
+  localStorage.setItem("keranjang", JSON.stringify(keranjang));
+}
+
+// Render tabel inventaris
+function renderInventaris() {
+  const tbody = document.querySelector("#inventarisTable tbody");
+  tbody.innerHTML = "";
+
+  inventarisList.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.ID_BARANG}</td>
+      <td>${item.NAMA_BARANG}</td>
+      <td>${item.MERK_TIPE}</td>
+      <td>${item.SPESIFIKASI}</td>
+      <td>${item.JUMLAH}</td>
+      <td>${item.KONDISI}</td>
+      <td><button class="btn-add" data-id="${item.ID_BARANG}">Tambah ke Keranjang</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Render tabel keranjang
+function renderKeranjang() {
+  const tbody = document.querySelector("#keranjangTable tbody");
+  tbody.innerHTML = "";
+
+  if (keranjang.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Keranjang kosong</td></tr>`;
+    return;
+  }
+
+  keranjang.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.ID_BARANG}</td>
+      <td>${item.NAMA_BARANG}</td>
+      <td>
+        <input type="number" min="1" max="${item.JUMLAH}" value="${item.jumlahDipinjam}" data-id="${item.ID_BARANG}" class="jumlahInput" style="width:70px;" />
+      </td>
+      <td><button class="btn-remove" data-id="${item.ID_BARANG}">Hapus</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Tambah barang ke keranjang
+function tambahKeranjang(idBarang) {
+  const item = inventarisList.find(i => i.ID_BARANG === idBarang);
+  if (!item) return alert("Barang tidak ditemukan.");
+
+  // Cek sudah ada di keranjang
+  const index = keranjang.findIndex(k => k.ID_BARANG === idBarang);
+  if (index > -1) {
+    if (keranjang[index].jumlahDipinjam + 1 > item.JUMLAH) {
+      return alert("Jumlah melebihi stok tersedia.");
+    }
+    keranjang[index].jumlahDipinjam++;
+  } else {
+    if (item.JUMLAH < 1) return alert("Stok barang kosong.");
+    keranjang.push({
+      ID_BARANG: item.ID_BARANG,
+      NAMA_BARANG: item.NAMA_BARANG,
+      JUMLAH: item.JUMLAH,
+      jumlahDipinjam: 1
+    });
+  }
+  simpanKeranjang();
+  renderKeranjang();
+}
+
+// Hapus barang dari keranjang
+function hapusKeranjang(idBarang) {
+  keranjang = keranjang.filter(k => k.ID_BARANG !== idBarang);
+  simpanKeranjang();
+  renderKeranjang();
+}
+
+// Update jumlah barang di keranjang
+function updateJumlah(idBarang, jumlahBaru) {
+  const item = inventarisList.find(i => i.ID_BARANG === idBarang);
+  if (!item) return alert("Barang tidak ditemukan.");
+
+  if (jumlahBaru < 1) {
+    alert("Jumlah minimal 1.");
+    renderKeranjang();
+    return;
+  }
+
+  if (jumlahBaru > item.JUMLAH) {
+    alert("Jumlah melebihi stok tersedia.");
+    renderKeranjang();
+    return;
+  }
+
+  const keranjangItem = keranjang.find(k => k.ID_BARANG === idBarang);
+  if (keranjangItem) {
+    keranjangItem.jumlahDipinjam = jumlahBaru;
+    simpanKeranjang();
+  }
+}
+
+// Submit seluruh keranjang ke server sekaligus
+function ajukanSemua() {
+  const namaPeminjam = prompt("Masukkan nama Anda sebagai peminjam:");
+  if (!namaPeminjam) return alert("Nama peminjam wajib diisi.");
+
+  if (keranjang.length === 0) {
+    return alert("Keranjang masih kosong.");
+  }
+
+  // Validasi jumlah stok sebelum submit
+  for (const item of keranjang) {
+    if (item.jumlahDipinjam > item.JUMLAH) {
+      return alert(`Jumlah peminjaman "${item.NAMA_BARANG}" melebihi stok tersedia.`);
+    }
+  }
+
+  // Proses submit satu per satu secara berurutan
+  const promises = keranjang.map(item => {
+    const params = new URLSearchParams({
+      action: "ajukanPeminjaman",
+      tanggal_pengajuan: new Date().toISOString().slice(0,10),
+      nama_peminjam: namaPeminjam,
+      ID_BARANG: item.ID_BARANG,
+      nama_barang: item.NAMA_BARANG,
+      MERK_TIPE: "", // bisa ditambah jika perlu
+      SPESIFIKASI: "",
+      SERIAL_NUMBER: "",
+      jumlah_tersedia: item.JUMLAH,
+      jumlah_dipinjam: item.jumlahDipinjam,
+      KONDISI: "",
+      tanggal_pinjam: "", // bisa ditambah form tgl pinjam jika ingin detail
+      tanggal_kembali: ""
+    });
+
+    return fetch(scriptURL, {
+      method: "POST",
+      body: params
+    }).then(res => res.json());
+  });
+
+  Promise.all(promises).then(results => {
+    let sukses = 0;
+    let gagal = 0;
+
+    results.forEach(r => {
+      if (r.status === "success") sukses++;
+      else gagal++;
+    });
+
+    if (sukses > 0) {
+      alert(`Berhasil mengajukan ${sukses} barang.`);
+      keranjang = [];
+      simpanKeranjang();
+      renderKeranjang();
+      loadInventaris();
+    }
+
+    if (gagal > 0) alert(`${gagal} pengajuan gagal. Coba lagi.`);
+  });
+}
+
+// Load data inventaris dari server
+function loadInventaris() {
   fetch(scriptURL + "?action=viewInventaris")
-    .then((res) => res.json())
-    .then((data) => {
+    .then(res => res.json())
+    .then(data => {
       const header = data[0];
       const body = data.slice(1);
 
@@ -14,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const namaIndex = header.indexOf("NAMA_BARANG");
       const merkIndex = header.indexOf("MERK_TIPE");
       const spekIndex = header.indexOf("SPESIFIKASI");
-      const serialIndex = header.indexOf("SERIAL_NUMBER");
       const jumlahIndex = header.indexOf("JUMLAH");
       const kondisiIndex = header.indexOf("KONDISI");
 
@@ -23,199 +189,44 @@ document.addEventListener("DOMContentLoaded", () => {
         NAMA_BARANG: row[namaIndex],
         MERK_TIPE: row[merkIndex],
         SPESIFIKASI: row[spekIndex],
-        SERIAL_NUMBER: row[serialIndex],
         JUMLAH: row[jumlahIndex],
         KONDISI: row[kondisiIndex]
       }));
 
-      const datalist = document.getElementById("listBarang");
-      inventarisList.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.ID_BARANG;
-        datalist.appendChild(option);
-      });
+      renderInventaris();
+      renderKeranjang();
     });
+}
 
-  document.getElementById("idBarang").addEventListener("input", tampilkanDetailBarang);
-  document.getElementById("btnTambahKeranjang").addEventListener("click", tambahKeKeranjang);
-  document.getElementById("formPengajuan").addEventListener("submit", ajukanSemuaPeminjaman);
-  
-  renderKeranjang();
+document.addEventListener("DOMContentLoaded", () => {
+  loadInventaris();
+
+  // Event delegation untuk tombol tambah dan hapus
+  document.querySelector("#inventarisTable tbody").addEventListener("click", e => {
+    if (e.target.classList.contains("btn-add")) {
+      tambahKeranjang(e.target.dataset.id);
+    }
+  });
+
+  document.querySelector("#keranjangTable tbody").addEventListener("click", e => {
+    if (e.target.classList.contains("btn-remove")) {
+      hapusKeranjang(e.target.dataset.id);
+    }
+  });
+
+  // Event change untuk input jumlah
+  document.querySelector("#keranjangTable tbody").addEventListener("change", e => {
+    if (e.target.classList.contains("jumlahInput")) {
+      const idBarang = e.target.dataset.id;
+      const jumlahBaru = parseInt(e.target.value);
+      updateJumlah(idBarang, jumlahBaru);
+    }
+  });
+
+  document.getElementById("ajukanBtn").addEventListener("click", ajukanSemua);
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "index.html";
+  });
 });
-
-function tampilkanDetailBarang() {
-  const id = document.getElementById("idBarang").value;
-  const detail = inventarisList.find(item => item.ID_BARANG === id);
-  if (detail) {
-    document.getElementById("namaBarang").value = detail.NAMA_BARANG || "";
-    document.getElementById("merkTipe").value = detail.MERK_TIPE || "";
-    document.getElementById("spesifikasi").value = detail.SPESIFIKASI || "";
-    document.getElementById("serialNumber").value = detail.SERIAL_NUMBER || "";
-    document.getElementById("jumlahTersedia").value = detail.JUMLAH || "";
-    document.getElementById("kondisi").value = detail.KONDISI || "";
-  } else {
-    // Kosongkan jika tidak ketemu
-    document.getElementById("namaBarang").value = "";
-    document.getElementById("merkTipe").value = "";
-    document.getElementById("spesifikasi").value = "";
-    document.getElementById("serialNumber").value = "";
-    document.getElementById("jumlahTersedia").value = "";
-    document.getElementById("kondisi").value = "";
-  }
-}
-
-function tambahKeKeranjang() {
-  const nama = document.getElementById("namaPeminjam").value.trim();
-  const idBarang = document.getElementById("idBarang").value;
-  const namaBarang = document.getElementById("namaBarang").value;
-  const merkTipe = document.getElementById("merkTipe").value;
-  const spesifikasi = document.getElementById("spesifikasi").value;
-  const serial = document.getElementById("serialNumber").value;
-  const jumlahTersedia = parseInt(document.getElementById("jumlahTersedia").value || "0");
-  const kondisi = document.getElementById("kondisi").value;
-  const jumlah = parseInt(document.getElementById("jumlah").value || "0");
-  const tglPinjam = document.getElementById("tglPinjam").value;
-  const tglKembali = document.getElementById("tglKembali").value;
-
-  // Validasi
-  if (!nama || !idBarang || !namaBarang || !jumlah || !tglPinjam || !tglKembali) {
-    alert("Mohon lengkapi semua field.");
-    return;
-  }
-  if (jumlahTersedia <= 0) {
-    alert("Stok barang kosong. Tidak bisa dipinjam.");
-    return;
-  }
-  if (jumlah > jumlahTersedia) {
-    alert(`Jumlah dipinjam melebihi stok tersedia (${jumlahTersedia}).`);
-    return;
-  }
-
-  // Cek apakah sudah ada di keranjang (ID dan tanggal sama)
-  const sudahAda = keranjang.findIndex(item => 
-    item.ID_BARANG === idBarang && item.tglPinjam === tglPinjam && item.tglKembali === tglKembali
-  );
-  if (sudahAda >= 0) {
-    alert("Barang ini dengan tanggal pinjam/kembali yang sama sudah ada di keranjang.");
-    return;
-  }
-
-  keranjang.push({
-    nama_peminjam: nama,
-    ID_BARANG: idBarang,
-    nama_barang: namaBarang,
-    MERK_TIPE: merkTipe,
-    SPESIFIKASI: spesifikasi,
-    SERIAL_NUMBER: serial,
-    jumlah_tersedia: jumlahTersedia,
-    jumlah_dipinjam: jumlah,
-    KONDISI: kondisi,
-    tglPinjam,
-    tglKembali
-  });
-
-  renderKeranjang();
-  resetFormInputBarang();
-}
-
-function resetFormInputBarang() {
-  // Hanya reset input barang, nama peminjam tetap
-  document.getElementById("idBarang").value = "";
-  document.getElementById("namaBarang").value = "";
-  document.getElementById("merkTipe").value = "";
-  document.getElementById("spesifikasi").value = "";
-  document.getElementById("serialNumber").value = "";
-  document.getElementById("jumlahTersedia").value = "";
-  document.getElementById("kondisi").value = "";
-  document.getElementById("jumlah").value = "";
-  document.getElementById("tglPinjam").value = "";
-  document.getElementById("tglKembali").value = "";
-}
-
-function renderKeranjang() {
-  const container = document.getElementById("keranjangContainer");
-  if (!container) return;
-
-  if (keranjang.length === 0) {
-    container.innerHTML = "<p>Keranjang kosong.</p>";
-    return;
-  }
-
-  let html = `<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
-    <thead>
-      <tr>
-        <th>ID Barang</th><th>Nama Barang</th><th>Jumlah Dipinjam</th><th>Tgl Pinjam</th><th>Tgl Kembali</th><th>Aksi</th>
-      </tr>
-    </thead><tbody>`;
-
-  keranjang.forEach((item, index) => {
-    html += `<tr>
-      <td>${item.ID_BARANG}</td>
-      <td>${item.nama_barang}</td>
-      <td>${item.jumlah_dipinjam}</td>
-      <td>${item.tglPinjam}</td>
-      <td>${item.tglKembali}</td>
-      <td><button type="button" onclick="hapusDariKeranjang(${index})">Hapus</button></td>
-    </tr>`;
-  });
-
-  html += "</tbody></table>";
-
-  container.innerHTML = html;
-}
-
-function hapusDariKeranjang(index) {
-  keranjang.splice(index, 1);
-  renderKeranjang();
-}
-
-function ajukanSemuaPeminjaman(e) {
-  e.preventDefault();
-  if (keranjang.length === 0) {
-    alert("Keranjang masih kosong, silakan tambahkan barang terlebih dahulu.");
-    return;
-  }
-
-  const tglPengajuan = new Date().toISOString().slice(0, 10);
-
-  // Kirim satu-satu ke backend
-  let promises = [];
-  keranjang.forEach(item => {
-    const params = new URLSearchParams({
-      action: "ajukanPeminjaman",
-      tanggal_pengajuan: tglPengajuan,
-      nama_peminjam: item.nama_peminjam,
-      ID_BARANG: item.ID_BARANG,
-      nama_barang: item.nama_barang,
-      MERK_TIPE: item.MERK_TIPE,
-      SPESIFIKASI: item.SPESIFIKASI,
-      SERIAL_NUMBER: item.SERIAL_NUMBER,
-      jumlah_tersedia: item.jumlah_tersedia,
-      jumlah_dipinjam: item.jumlah_dipinjam,
-      KONDISI: item.KONDISI,
-      tanggal_pinjam: item.tglPinjam,
-      tanggal_kembali: item.tglKembali,
-    });
-
-    promises.push(fetch(scriptURL, {
-      method: "POST",
-      body: params,
-    }).then(res => res.json()));
-  });
-
-  Promise.all(promises)
-    .then(results => {
-      const errors = results.filter(r => r.status === "error");
-      if (errors.length > 0) {
-        alert("Beberapa pengajuan gagal diproses:\n" + errors.map(e => e.message).join("\n"));
-      } else {
-        alert("Semua pengajuan berhasil disimpan.");
-        keranjang = [];
-        renderKeranjang();
-        document.getElementById("formPengajuan").reset();
-      }
-    })
-    .catch(() => {
-      alert("Gagal menghubungi server.");
-    });
-}
