@@ -2,168 +2,49 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Guru - SMKN 3 Soppeng</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Guru</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    :root {
-      --primary: #3B82F6;
-      --primary-dark: #2563EB;
-      --danger: #EF4444;
-      --danger-dark: #DC2626;
-      --text: #1F2937;
-      --light: #F3F4F6;
-      --white: #FFFFFF;
-      --gray: #9CA3AF;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--light);
-      margin: 0;
-      padding: 0;
-      color: var(--text);
-    }
-
-    .dashboard-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 0;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #E5E7EB;
-    }
-
-    .header-title h1 {
-      font-size: 1.5rem;
-      color: var(--text);
-      margin: 0;
-    }
-
-    .header-title p {
-      font-size: 0.9rem;
-      color: var(--gray);
-      margin: 5px 0 0;
-    }
-
-    button.logout {
-      background-color: var(--danger);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      cursor: pointer;
-      border-radius: 6px;
-      font-weight: 500;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
-    }
-
-    button.logout:hover {
-      background-color: var(--danger-dark);
-    }
-
-    .card {
-      background: var(--white);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .card-title {
-      font-size: 1.2rem;
-      margin: 0;
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    th, td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #E5E7EB;
-    }
-
-    th {
-      background-color: #F9FAFB;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    tr:hover {
-      background-color: #F9FAFB;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: 500;
-      transition: background-color 0.2s;
-      display: inline-block;
-      font-size: 0.9rem;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-    }
-
-    .status-available {
-      color: #10B981;
-      font-weight: 500;
-    }
-
-    .status-unavailable {
-      color: var(--danger);
-      font-weight: 500;
-    }
-
-    #tabelInventaris {
-      overflow-x: auto;
-    }
-  </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <header>
-      <div class="header-title">
-        <h1>Dashboard Guru</h1>
-        <p>Laboratorium TKJ SMKN 3 Soppeng</p>
-      </div>
-      <button class="logout" id="logoutBtn">Logout</button>
-    </header>
+  <header>
+    <h1>Dashboard Guru</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
 
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Daftar Inventaris</h2>
-        <a href="form_peminjaman.html" class="btn-primary">Ajukan Peminjaman</a>
-      </div>
-      <div id="tabelInventaris">Memuat data inventaris...</div>
-    </div>
-  </div>
+  <section>
+    <h2>Daftar Inventaris Barang</h2>
+    <table id="inventarisTable" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID Barang</th>
+          <th>Nama Barang</th>
+          <th>Merk/Tipe</th>
+          <th>Spesifikasi</th>
+          <th>Jumlah Tersedia</th>
+          <th>Kondisi</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Keranjang Peminjaman</h2>
+    <table id="keranjangTable" border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID Barang</th>
+          <th>Nama Barang</th>
+          <th>Jumlah Pinjam</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="ajukanBtn">Ajukan Peminjaman</button>
+  </section>
 
   <script src="js/guru.js"></script>
 </body>
